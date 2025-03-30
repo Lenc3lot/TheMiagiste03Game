@@ -9,6 +9,7 @@ public class PNJ_Admin extends PNJ{
 
     public boolean isAllKeyItemsCollected(){
         // TODO : Verifie si le nombre d'item clés ont étés collectés avant l'heure max
+        return false;
     }
 
     /**
