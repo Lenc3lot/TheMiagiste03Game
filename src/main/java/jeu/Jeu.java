@@ -1,14 +1,13 @@
 package jeu;
-
-import netscape.javascript.JSObject;
+import org.json.JSONObject;
 
 public class Jeu {
 	
     private GUI gui; 
 	private Zone zoneCourante;
     private String PATH_TO_SAVES = "";
-    private JSObject loadedGameSave;
-    
+    private JSONObject loadedGameSave;
+
     public Jeu() {
         creerCarte();
         gui = null;

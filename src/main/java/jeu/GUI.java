@@ -27,7 +27,7 @@ public class GUI implements ActionListener
     }
 
    public void afficheImage( String nomImage) {
-	   	URL imageURL = this.getClass().getClassLoader().getResource("jeu/images/" + nomImage);
+	   	URL imageURL = this.getClass().getClassLoader().getResource("jeu/jeu.images/" + nomImage);
 	   	if( imageURL != null ) {
         	image.setIcon( new ImageIcon( imageURL ));
             fenetre.pack();
