@@ -3,16 +3,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum Commande {
-	NORD("N", "N (aller à la sortie nord)"), 
-	SUD("S", "S (aller à la sortie sud)"), 
-	EST("E", "E (aller à la sortie est)"), 
-	OUEST("O", "O (aller à la sortie ouest)"), 
-	AIDE("?", "? (aide)"), 
-	QUITTER("Q", "Q (quitter)");
+	ALLER("ALLER", "ALLER [direction] (N, S, E, O, H, B)"),
+	PARLER("PARLER", "PARLER [personnage]"),
+	PRENDRE("PRENDRE", "PRENDRE [objet]"),
+	DEPOSER("DEPOSER", "DEPOSER [objet]"),
+	INVENTAIRE("INVENTAIRE", "INVENTAIRE (afficher l'inventaire)"),
+	INSPECTER("INSPECTER", "INSPECTER [élément]"),
+	OUVRIR("OUVRIR", "OUVRIR [conteneur]"),
+	UTILISER("UTILISER", "UTILISER [objet]"),
+	RETOUR("RETOUR", "RETOUR (retourner à la zone précédente)"),
+	TELEPORTER("TELEPORTER", "TELEPORTER (se téléporter à une zone)"),
+	QUITTER("QUITTER", "QUITTER (quitter le jeu)"),
+	AIDE("?", "? (aide)");
 
 	private String abreviation;
 	private String description;
-	private Commande(String c, String d ) { 
+	private Commande(String c, String d) { 
 		abreviation = c;
 		description = d; 
 	}
@@ -24,7 +30,7 @@ public enum Commande {
 	public static List<String> toutesLesDescriptions() { 
 		ArrayList<String> resultat = new ArrayList<String>();
 		for(Commande c : values()) {
-			resultat.add( c.description);
+			resultat.add(c.description);
 		}
 		return resultat;
 	}
@@ -32,7 +38,7 @@ public enum Commande {
 	public static List<String> toutesLesAbreviations() { 
 		ArrayList<String> resultat = new ArrayList<String>();
 		for(Commande c : values()) {
-			resultat.add( c.abreviation);
+			resultat.add(c.abreviation);
 		}
 		return resultat;
 	}
@@ -40,7 +46,7 @@ public enum Commande {
 	public static List<String> tousLesNoms() { 
 		ArrayList<String> resultat = new ArrayList<String>();
 		for(Commande c : values()) {
-			resultat.add( c.name());
+			resultat.add(c.name());
 		}
 		return resultat;
 	}
