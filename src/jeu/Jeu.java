@@ -22,19 +22,30 @@ public class Jeu {
     public void setGUI( GUI g) { gui = g; afficherMessageDeBienvenue(); }
     
     private void creerCarte() {
-
+        //Exterieur
         Zone zamZam = new Zone("Zam Zam", "ZamZamAvecKebab.png");
         Zone parking = new Zone("Parking", "Parking.png");
+        //RDC
         Zone hallEntree = new Zone("Hall d'entrée", "hallEntree.png");
         Zone couloirRdcEst = new Zone("couloir RDC Est", "CouloirEst.png");
         Zone couloirRdcOuest = new Zone("couloir RDC Ouest", "CouloirOuest.png");
         Zone bureauAdministration = new Zone("Bureau administration", "bureauAdAvecCertif.png");
         Zone salle001 = new Zone("Salle 0.01", "Salle001AvecMaison.png");
+        //Etage 1
         Zone hallEtage1 = new Zone("hall 1er étage", "hallEtage1.png");
         Zone couloirEtage1Est = new Zone("couloir 1er étage Est", "CouloirEst.png");
         Zone couloirEtage1Ouest = new Zone("couloir 1er étage Ouest", "CouloirOuest.png");
         Zone salleDePause = new Zone("Salle de pause", "salleDePauseAvecChatGpt.png");
         Zone salle101 = new Zone("Salle 1.01", "Salle101AvecGuide.png");
+        //Etage 2
+        Zone hallEtage2 = new Zone("hall 2ème étage", "hallEtage2.png");
+        Zone couloirEtage2Est = new Zone("couloir 2ème étage Est", "CouloirEst.png");
+        Zone couloirEtage2Ouest = new Zone("couloir 2ème étage Ouest", "CouloirOuest.png");
+        Zone salle218 = new Zone("Salle 2.18", "Salle218AvecScrumUsb.png");
+        Zone salle204 = new Zone("Salle 2.04", "salle204AvecArticlesMicroOndes.png");
+        Zone salle201 = new Zone("Salle 2.01", "salle201AvecArticle.png");
+
+        //Etage 3
         Zone hallEtage3 = new Zone("hall 3ème étage", "hallEtage3.png");
         Zone bureauBde = new Zone("Bureau BDE", "bureauBdeCoffreFerme.png");
 
@@ -82,8 +93,30 @@ public class Jeu {
         couloirEtage1Ouest.ajouteSortie(Sortie.EST, hallEtage1);
         couloirEtage1Ouest.ajouteSortie(Sortie.SUD, salle101);
 
-        //Salle 101
+        //Salle 1.01
         salle101.ajouteSortie(Sortie.SUD, couloirEtage1Ouest);
+
+        //Hall étage 2
+        hallEtage2.ajouteSortie(Sortie.EST, couloirEtage2Est);
+        hallEtage2.ajouteSortie(Sortie.OUEST, couloirEtage2Ouest);
+
+        //Couloir 2ème étage est
+        couloirEtage2Est.ajouteSortie(Sortie.OUEST, hallEtage2);
+        couloirEtage2Est.ajouteSortie(Sortie.SUD, salle218);
+
+        //Salle 2.18
+        salle218.ajouteSortie(Sortie.SUD, couloirEtage2Est);
+
+        //Couloir 2ème étage ouest
+        couloirEtage2Ouest.ajouteSortie(Sortie.EST, hallEtage2);
+        couloirEtage2Ouest.ajouteSortie(Sortie.NORD, salle204);
+        couloirEtage2Ouest.ajouteSortie(Sortie.SUD, salle201);
+
+        //Salle 2.04
+        salle204.ajouteSortie(Sortie.SUD, couloirEtage2Ouest);
+
+        //Salle 2.01
+        salle201.ajouteSortie(Sortie.SUD, couloirEtage2Ouest);
 
         //Hall étage 3
         hallEtage3.ajouteSortie(Sortie.EST, bureauBde);
