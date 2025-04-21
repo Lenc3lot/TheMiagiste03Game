@@ -30,6 +30,11 @@ public class Jeu {
         Zone couloirRdcOuest = new Zone("couloir RDC Ouest", "CouloirOuest.png");
         Zone bureauAdministration = new Zone("Bureau administration", "bureauAdAvecCertif.png");
         Zone salle001 = new Zone("Salle 0.01", "Salle001AvecMaison.png");
+        Zone hallEtage1 = new Zone("hall 1er étage", "hallEtage1.png");
+        Zone couloirEtage1Est = new Zone("couloir 1er étage Est", "CouloirEst.png");
+        Zone couloirEtage1Ouest = new Zone("couloir 1er étage Ouest", "CouloirOuest.png");
+        Zone salleDePause = new Zone("Salle de pause", "salleDePauseAvecChatGpt.png");
+        Zone salle101 = new Zone("Salle 1.01", "Salle101AvecGuide.png");
 
 
 
@@ -60,9 +65,26 @@ public class Jeu {
         //Salle 0.01
         salle001.ajouteSortie(Sortie.SUD, couloirRdcOuest);
 
+        //hall etage 1
+        hallEtage1.ajouteSortie(Sortie.OUEST,couloirEtage1Ouest);
+        hallEtage1.ajouteSortie(Sortie.EST,couloirEtage1Est);
+
+        //Couloir 1er étage Est
+        couloirEtage1Est.ajouteSortie(Sortie.SUD, salleDePause);
+        couloirEtage1Est.ajouteSortie(Sortie.OUEST, hallEtage1);
+
+        //Salle de pause
+        salleDePause.ajouteSortie(Sortie.SUD, couloirEtage1Est);
+
+
+        //Couloir 1er étage ouest
+        couloirEtage1Ouest.ajouteSortie(Sortie.EST, hallEtage1);
+        couloirEtage1Ouest.ajouteSortie(Sortie.SUD, salle101);
+
+        //Salle 101
+        salle101.ajouteSortie(Sortie.SUD, couloirEtage1Ouest);
+
         zoneCourante = parking;
-
-
     }
 
     private void afficherLocalisation() {
