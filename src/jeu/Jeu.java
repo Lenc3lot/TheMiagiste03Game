@@ -25,14 +25,43 @@ public class Jeu {
 
         Zone zamZam = new Zone("Zam Zam", "ZamZamAvecKebab.png");
         Zone parking = new Zone("Parking", "Parking.png");
+        Zone hallEntree = new Zone("Hall d'entrée", "hallEntree.png");
+        Zone couloirRdcEst = new Zone("couloir RDC Est", "CouloirEst.png");
+        Zone couloirRdcOuest = new Zone("couloir RDC Ouest", "CouloirOuest.png");
+        Zone bureauAdministration = new Zone("Bureau administration", "bureauAdAvecCertif.png");
+        Zone salle001 = new Zone("Salle 0.01", "Salle001AvecMaison.png");
+
+
 
         //Parking
         parking.ajouteSortie(Sortie.NORD, zamZam);
+        parking.ajouteSortie(Sortie.OUEST, hallEntree);
+
 
         //ZamZam
         zamZam.ajouteSortie(Sortie.SUD, parking);
 
+        //hall
+        hallEntree.ajouteSortie(Sortie.EST, couloirRdcEst);
+        hallEntree.ajouteSortie(Sortie.OUEST, couloirRdcOuest);
+        hallEntree.ajouteSortie(Sortie.SUD, parking);
+
+        //couloir Rdc Est
+        couloirRdcEst.ajouteSortie(Sortie.OUEST, hallEntree);
+        couloirRdcEst.ajouteSortie(Sortie.SUD,bureauAdministration);
+
+        //bureau Administration
+        bureauAdministration.ajouteSortie(Sortie.OUEST, couloirRdcEst);
+
+        //couloir Rdc Ouest
+        couloirRdcOuest.ajouteSortie(Sortie.EST, hallEntree);
+        couloirRdcOuest.ajouteSortie(Sortie.SUD, salle001);
+
+        //Salle 0.01
+        salle001.ajouteSortie(Sortie.SUD, couloirRdcOuest);
+
         zoneCourante = parking;
+
 
     }
 
