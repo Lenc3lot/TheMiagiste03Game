@@ -21,4 +21,8 @@ public class Objet {
         return "IdObjet : "+ idObjet+ ", labelObjet  : "+labelObjet+", isKeyObject : "+ isKeyObject+", isUsable : "+isUsable;
     }
 
+	public String getLabel() {
+	    return labelObjet;
+	}
+
 }

@@ -1,6 +1,9 @@
 package jeu;
 
 import netscape.javascript.JSObject;
+
+import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 public class Jeu {
@@ -62,6 +65,7 @@ public class Jeu {
         hallEntree.ajouteSortie(Sortie.EST, couloirRdcEst);
         hallEntree.ajouteSortie(Sortie.OUEST, couloirRdcOuest);
         hallEntree.ajouteSortie(Sortie.SUD, parking);
+        hallEntree.ajouteSortie(Sortie.HAUT, hallEtage1);
 
         //couloir Rdc Est
         couloirRdcEst.ajouteSortie(Sortie.OUEST, hallEntree);
@@ -80,6 +84,8 @@ public class Jeu {
         //hall étage 1
         hallEtage1.ajouteSortie(Sortie.OUEST,couloirEtage1Ouest);
         hallEtage1.ajouteSortie(Sortie.EST,couloirEtage1Est);
+        hallEtage1.ajouteSortie(Sortie.HAUT, hallEtage2);
+        hallEtage1.ajouteSortie(Sortie.BAS, hallEntree);
 
         //Couloir 1er étage Est
         couloirEtage1Est.ajouteSortie(Sortie.SUD, salleDePause);
@@ -99,6 +105,8 @@ public class Jeu {
         //Hall étage 2
         hallEtage2.ajouteSortie(Sortie.EST, couloirEtage2Est);
         hallEtage2.ajouteSortie(Sortie.OUEST, couloirEtage2Ouest);
+        hallEtage2.ajouteSortie(Sortie.HAUT, hallEtage3);
+        hallEtage2.ajouteSortie(Sortie.BAS, hallEtage1);
 
         //Couloir 2ème étage est
         couloirEtage2Est.ajouteSortie(Sortie.OUEST, hallEtage2);
@@ -120,6 +128,7 @@ public class Jeu {
 
         //Hall étage 3
         hallEtage3.ajouteSortie(Sortie.EST, bureauBde);
+        hallEtage3.ajouteSortie(Sortie.BAS, hallEtage2);
 
         //Bureau BDE
         bureauBde.ajouteSortie(Sortie.OUEST, hallEtage3);
@@ -158,9 +167,6 @@ public class Jeu {
             case "PRENDRE":
                 prendreObjet(parametre);
                 break;
-            case "DEPOSER":
-                deposerObjet(parametre);
-                break;
             case "INVENTAIRE":
                 afficherInventaire();
                 break;
@@ -191,34 +197,81 @@ public class Jeu {
                 break;
         }
     }
+    private static final Map<String, String> directionsMap = Map.of(
+    	    "N", "NORD",
+    	    "S", "SUD",
+    	    "E", "EST",
+    	    "O", "OUEST",
+    	    "H", "HAUT",
+    	    "B", "BAS"
+    	);
+
 
     private void allerEn(String direction) {
-        // TODO: Implémenter la logique de déplacement
-        // Vérifier si la direction est valide (N, S, E, O, H, B)
-        // Sauvegarder la zone actuelle dans l'historique
-        // Changer de zone si possible
+        direction = directionValideOuNull(direction);
+
+        if (direction == null) {
+            gui.afficher("Où voulez-vous aller ? Précisez une direction (N, S, E, O).");
+            return;
+        }
+
+        Zone nouvelleZone = zoneCourante.obtientSortie(direction);
+
+        if (nouvelleZone == null) {
+            gui.afficher("Il n'y a pas de sortie dans cette direction !");
+            return;
+        }
+
+        historiqueZones.push(zoneCourante);
+        zoneCourante = nouvelleZone;
+
+        afficherLocalisation();
+        gui.afficheImage(zoneCourante.nomImage());
+    }
+
+    private String directionValideOuNull(String direction) {
+        if (direction == null || direction.trim().isEmpty()) return null;
+        String directionClean = direction.trim().toUpperCase();
+        return directionsMap.getOrDefault(directionClean, directionClean);
     }
 
     private void parlerA(String personnage) {
         // TODO: Implémenter la logique de dialogue avec un PNJ
     }
 
-    private void prendreObjet(String objet) {
-        // TODO: Implémenter la logique de prise d'objet
-        // Vérifier si l'objet existe dans la zone
-        // Ajouter à l'inventaire
+    private void prendreObjet(String nomObjet) {
+        if (nomObjet == null || nomObjet.trim().isEmpty()) {
+            gui.afficher("Que voulez-vous prendre ?");
+            return;
+        }
+        
+        Objet objet = zoneCourante.retirerObjet(nomObjet);
+        
+        if (objet == null) {
+            gui.afficher("Il n'y a pas de '" + nomObjet + "' ici.");
+            return;
+        }
+        
+        inventaire.ajouterObjet(objet);
+        
+        gui.afficher("Vous avez pris : " + objet.getLabel());
     }
-
-    private void deposerObjet(String objet) {
-        // TODO: Implémenter la logique de dépôt d'objet
-        // Vérifier si l'objet est dans l'inventaire
-        // Retirer de l'inventaire et ajouter à la zone
-    }
-
+    
     private void afficherInventaire() {
-        // TODO: Implémenter l'affichage de l'inventaire
-        gui.afficher("Inventaire :");
-        // Afficher les objets de l'inventaire
+        List<Objet> objets = inventaire.getObjets();
+        
+        gui.afficher("=== INVENTAIRE ===");
+        if (objets.isEmpty()) {
+            gui.afficher("Votre inventaire est vide.");
+        } else {
+            gui.afficher("Contenu de l'inventaire :");
+            for (Objet obj : objets) {
+                gui.afficher("- " + obj.getLabel());
+            }
+        }
+        
+        gui.afficher("==================");
+        gui.afficher();
     }
 
     private void inspecter(String element) {
