@@ -7,7 +7,6 @@ public class Joueur {
     private String pseudo;
     private Inventaire inventaireJoueur;
     private boolean isLogged;
-    private Zone zoneCourante;
 
     public Joueur(String unPseudo) {
         this.pseudo = unPseudo;
@@ -15,16 +14,12 @@ public class Joueur {
         this.isLogged = false;
     }
 
-    public void setZoneCourante(Zone zone) {
-        this.zoneCourante = zone;
-    }
-
-    public String parler(String personnage) {
+    public String parler(String personnage, Zone zone) {
         if (personnage == null || personnage.trim().isEmpty()) {
             return "A qui voulez-vous parler ?";
         }
 
-        List<PNJ> pnjs = zoneCourante.getPNJs();
+        List<PNJ> pnjs = zone.getPNJs();
         if (pnjs.isEmpty()) {
             return "Il n'y a personne ici à qui parler.";
         }
@@ -43,7 +38,7 @@ public class Joueur {
                         inventaireJoueur.ajouterObjet(emploiDuTemps);
                         message += "\nVous avez reçu : " + emploiDuTemps.getLabel();
                         // Changer l'image de la zone après avoir reçu l'objet
-                        zoneCourante.changerImage(zoneCourante.nomImage().replace("Avec", "Sans"));
+                        zone.changerImage(zone.nomImage().replace("Avec", "Sans"));
                     }
                     return message;
                 } else if (pnj instanceof PNJ_ZamZam) {
@@ -54,7 +49,7 @@ public class Joueur {
                         inventaireJoueur.ajouterObjet(sandwich);
                         message += "\nVous avez reçu : " + sandwich.getLabel();
                         // Changer l'image de la zone après avoir reçu l'objet
-                        zoneCourante.changerImage(zoneCourante.nomImage().replace("Avec", "Sans"));
+                        zone.changerImage(zone.nomImage().replace("Avec", "Sans"));
                     }
                     return message;
                 } else if (pnj instanceof PNJ_Prof) {
@@ -74,18 +69,14 @@ public class Joueur {
         return "La personne que vous cherchez n'est pas ici.";
     }
 
-    public void prendre(String objet) {
-        // Récupère un objet
-    }
-
-    public String inspecter(String element) {
+    public String inspecter(String element, Zone zone) {
         // Si pas de paramètre, on inspecte la zone par défaut
         if (element == null || element.trim().isEmpty()) {
             StringBuilder sb = new StringBuilder();
             sb.append("Vous examinez la zone :\n");
             
             // Afficher les objets
-            List<Objet> objets = zoneCourante.getObjets();
+            List<Objet> objets = zone.getObjets();
             if (!objets.isEmpty()) {
                 sb.append("Objets visibles :\n");
                 for (Objet obj : objets) {
@@ -94,10 +85,10 @@ public class Joueur {
             }
             
             // Afficher les coffres
-            if (zoneCourante.toString().equals("Bureau BDE")) {
+            if (zone.toString().equals("Bureau BDE")) {
                 sb.append("Coffres :\n");
                 sb.append("- Un coffre ");
-                if (zoneCourante.nomImage().equals("bureauBdeCoffreOuvert.png")) {
+                if (zone.nomImage().equals("bureauBdeCoffreOuvert.png")) {
                     sb.append("ouvert");
                 } else {
                     sb.append("fermé");
@@ -110,15 +101,15 @@ public class Joueur {
         return "Il n'y a rien à examiner ici.";
     }
 
-    public String ouvrir(String conteneur) {
+    public String ouvrir(String conteneur, Zone zone) {
         // Si pas de paramètre et qu'on est dans le bureau BDE, on ouvre le coffre par défaut
         if (conteneur == null || conteneur.trim().isEmpty()) {
-            if (zoneCourante.toString().equals("Bureau BDE")) {
-                if (zoneCourante.nomImage().equals("bureauBdeCoffreOuvert.png")) {
+            if (zone.toString().equals("Bureau BDE")) {
+                if (zone.nomImage().equals("bureauBdeCoffreOuvert.png")) {
                     return "Le coffre est déjà ouvert !";
                 }
                 
-                zoneCourante.changerImage("bureauBdeCoffreOuvert.png");
+                zone.changerImage("bureauBdeCoffreOuvert.png");
                 
                 Objet mascotte = Objet.MASCOTTE;
                 inventaireJoueur.ajouterObjet(mascotte);
@@ -128,12 +119,12 @@ public class Joueur {
             return "Que voulez-vous ouvrir ?";
         }
 
-        if (zoneCourante.toString().equals("Bureau BDE") && conteneur.equalsIgnoreCase("COFFRE")) {
-            if (zoneCourante.nomImage().equals("bureauBdeCoffreOuvert.png")) {
+        if (zone.toString().equals("Bureau BDE") && conteneur.equalsIgnoreCase("COFFRE")) {
+            if (zone.nomImage().equals("bureauBdeCoffreOuvert.png")) {
                 return "Le coffre est déjà ouvert !";
             }
             
-            zoneCourante.changerImage("bureauBdeCoffreOuvert.png");
+            zone.changerImage("bureauBdeCoffreOuvert.png");
             
             Objet mascotte = Objet.MASCOTTE;
             inventaireJoueur.ajouterObjet(mascotte);
@@ -168,20 +159,20 @@ public class Joueur {
         return inventaireJoueur;
     }
 
-    public String prendreObjet(String nomObjet) {
+    public String prendreObjet(String nomObjet, Zone zone) {
         // Si pas de paramètre et qu'il n'y a qu'un seul objet, on le prend par défaut
         if (nomObjet == null || nomObjet.trim().isEmpty()) {
-            List<Objet> objets = zoneCourante.getObjets();
+            List<Objet> objets = zone.getObjets();
             if (objets.size() == 1) {
                 Objet objet = objets.get(0);
-                zoneCourante.retirerObjet(objet.getLabel());
+                zone.retirerObjet(objet.getLabel());
                 inventaireJoueur.ajouterObjet(objet);
                 return "Vous avez pris : " + objet.getLabel();
             }
             return "Que voulez-vous prendre ?";
         }
         
-        Objet objet = zoneCourante.retirerObjet(nomObjet);
+        Objet objet = zone.retirerObjet(nomObjet);
         
         if (objet == null) {
             return "Il n'y a pas de '" + nomObjet + "' ici.";

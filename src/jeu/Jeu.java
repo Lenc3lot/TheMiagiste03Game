@@ -27,7 +27,6 @@ public class Jeu {
         historiqueZones = new Stack<>();
         actualPlayer = new Joueur("newJoueur");
         actualGameState = new Sauvegarde();
-        actualPlayer.setZoneCourante(zoneCourante);
     }
 
     public void setGUI( GUI g) {
@@ -289,7 +288,6 @@ public class Jeu {
 
         historiqueZones.push(zoneCourante);
         zoneCourante = nouvelleZone;
-        actualPlayer.setZoneCourante(zoneCourante);
 
         afficherLocalisation();
         gui.afficheImage(zoneCourante.nomImage());
@@ -302,13 +300,13 @@ public class Jeu {
     }
 
     private void parlerA(String personnage) {
-        String message = actualPlayer.parler(personnage);
+        String message = actualPlayer.parler(personnage, zoneCourante);
         gui.afficher(message);
         gui.afficheImage(zoneCourante.nomImage());
     }
 
     private void prendreObjet(String nomObjet) {
-        String message = actualPlayer.prendreObjet(nomObjet);
+        String message = actualPlayer.prendreObjet(nomObjet, zoneCourante);
         gui.afficher(message);
         gui.afficheImage(zoneCourante.nomImage());
     }
@@ -319,13 +317,13 @@ public class Jeu {
     }
 
     private void inspecter(String element) {
-        String message = actualPlayer.inspecter(element);
+        String message = actualPlayer.inspecter(element, zoneCourante);
         gui.afficher(message);
         gui.afficheImage(zoneCourante.nomImage());
     }
 
     private void ouvrirConteneur(String conteneur) {
-        String message = actualPlayer.ouvrir(conteneur);
+        String message = actualPlayer.ouvrir(conteneur, zoneCourante);
         gui.afficher(message);
         gui.afficheImage(zoneCourante.nomImage());
     }
