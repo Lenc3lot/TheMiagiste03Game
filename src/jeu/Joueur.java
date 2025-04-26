@@ -42,6 +42,8 @@ public class Joueur {
                     if (emploiDuTemps != null) {
                         inventaireJoueur.ajouterObjet(emploiDuTemps);
                         message += "\nVous avez reçu : " + emploiDuTemps.getLabel();
+                        // Changer l'image de la zone après avoir reçu l'objet
+                        zoneCourante.changerImage(zoneCourante.nomImage().replace("Avec", "Sans"));
                     }
                     return message;
                 } else if (pnj instanceof PNJ_ZamZam) {
@@ -51,6 +53,8 @@ public class Joueur {
                     if (sandwich != null) {
                         inventaireJoueur.ajouterObjet(sandwich);
                         message += "\nVous avez reçu : " + sandwich.getLabel();
+                        // Changer l'image de la zone après avoir reçu l'objet
+                        zoneCourante.changerImage(zoneCourante.nomImage().replace("Avec", "Sans"));
                     }
                     return message;
                 } else if (pnj instanceof PNJ_Prof) {
@@ -106,6 +110,39 @@ public class Joueur {
 
     public Inventaire getInventaireJoueur() {
         return inventaireJoueur;
+    }
+
+    public String prendreObjet(String nomObjet) {
+        if (nomObjet == null || nomObjet.trim().isEmpty()) {
+            return "Que voulez-vous prendre ?";
+        }
+        
+        Objet objet = zoneCourante.retirerObjet(nomObjet);
+        
+        if (objet == null) {
+            return "Il n'y a pas de '" + nomObjet + "' ici.";
+        }
+
+        inventaireJoueur.ajouterObjet(objet);
+        return "Vous avez pris : " + objet.getLabel();
+    }
+
+    public String afficherInventaire() {
+        List<Objet> objets = inventaireJoueur.getObjets();
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("=== INVENTAIRE ===\n");
+        if (objets.isEmpty()) {
+            sb.append("Votre inventaire est vide.\n");
+        } else {
+            sb.append("Contenu de l'inventaire :\n");
+            for (Objet obj : objets) {
+                sb.append("- ").append(obj.getLabel()).append("\n");
+            }
+        }
+        sb.append("==================\n");
+        
+        return sb.toString();
     }
 }
 

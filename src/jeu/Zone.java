@@ -9,13 +9,19 @@ public class Zone
 {
     private String description;
     private String nomImage;
+    private String nomImageSansObjet;  // Image à afficher quand l'objet est pris
     private HashMap<String,Zone> sorties;   
     private List<Objet> objets = new ArrayList<>();
     private List<PNJ> pnjs = new ArrayList<>();
 
     public Zone(String description, String image) {
+        this(description, image, null);
+    }
+
+    public Zone(String description, String image, String imageSansObjet) {
         this.description = description;
-        nomImage = image;
+        this.nomImage = image;
+        this.nomImageSansObjet = imageSansObjet;
         sorties = new HashMap<>();
     }
 
@@ -37,6 +43,10 @@ public class Zone
 
     public String nomImage() {
         return nomImage;
+    }
+
+    public void changerImage(String nouvelleImage) {
+        this.nomImage = nouvelleImage;
     }
      
     public String toString() {
@@ -83,6 +93,9 @@ public class Zone
             Objet obj = objets.get(i);
             if (obj.getLabel().toUpperCase().equals(nomObjet)) {
                 objets.remove(i);
+                if (obj.isKeyObject() && nomImageSansObjet != null) {
+                    changerImage(nomImageSansObjet);
+                }
                 return obj;
             }
         }

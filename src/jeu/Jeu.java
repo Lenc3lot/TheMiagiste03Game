@@ -36,32 +36,32 @@ public class Jeu {
     
     private void creerCarte() {
         //Exterieur
-        Zone zamZam = new Zone("Zam Zam", "ZamZamAvecKebab.png");
+        Zone zamZam = new Zone("Zam Zam", "ZamZamAvecKebab.png", "ZamZamSansKebab.png");
         Zone parking = new Zone("Parking", "Parking.png");
 
         //RDC
         Zone hallEntree = new Zone("Hall d'entrée", "hallEntree.png");
         Zone couloirRdcEst = new Zone("couloir RDC Est", "CouloirEst.png");
         Zone couloirRdcOuest = new Zone("couloir RDC Ouest", "CouloirOuest.png");
-        Zone bureauAdministration = new Zone("Bureau administration", "bureauAdAvecCertif.png");
-        Zone salle001 = new Zone("Salle 0.01", "Salle001AvecMaison.png");
+        Zone bureauAdministration = new Zone("Bureau administration", "bureauAdAvecCertif.png", "bureauAdSansCertif.png");
+        Zone salle001 = new Zone("Salle 0.01", "Salle001AvecMaison.png", "Salle001SansMaison.png");
         //Etage 1
         Zone hallEtage1 = new Zone("hall 1er étage", "hallEtage1.png");
         Zone couloirEtage1Est = new Zone("couloir 1er étage Est", "CouloirEst.png");
         Zone couloirEtage1Ouest = new Zone("couloir 1er étage Ouest", "CouloirOuest.png");
-        Zone salleDePause = new Zone("Salle de pause", "salleDePauseAvecChatGpt.png");
-        Zone salle101 = new Zone("Salle 1.01", "Salle101AvecGuide.png");
+        Zone salleDePause = new Zone("Salle de pause", "salleDePauseAvecChatGpt.png", "salleDePauseSansChatGpt.png");
+        Zone salle101 = new Zone("Salle 1.01", "Salle101AvecGuide.png", "Salle101SansGuide.png");
         //Etage 2
         Zone hallEtage2 = new Zone("hall 2ème étage", "hallEtage2.png");
         Zone couloirEtage2Est = new Zone("couloir 2ème étage Est", "CouloirEst.png");
         Zone couloirEtage2Ouest = new Zone("couloir 2ème étage Ouest", "CouloirOuest.png");
-        Zone salle218 = new Zone("Salle 2.18", "Salle218AvecScrumUsb.png");
-        Zone salle204 = new Zone("Salle 2.04", "salle204AvecArticlesMicroOndes.png");
-        Zone salle201 = new Zone("Salle 2.01", "salle201AvecArticle.png");
+        Zone salle218 = new Zone("Salle 2.18", "Salle218AvecScrumUsb.png", "Salle218SansScrumUsb.png");
+        Zone salle204 = new Zone("Salle 2.04", "salle204AvecArticlesMicroOndes.png", "salle204SansArticlesMicroOndes.png");
+        Zone salle201 = new Zone("Salle 2.01", "salle201AvecArticle.png", "salle201SansArticle.png");
 
         //Etage 3
         Zone hallEtage3 = new Zone("hall 3ème étage", "hallEtage3.png");
-        Zone bureauBde = new Zone("Bureau BDE", "bureauBdeCoffreFerme.png");
+        Zone bureauBde = new Zone("Bureau BDE", "bureauBdeCoffreFerme.png", "bureauBdeCoffreOuvert.png");
 
         // Ajout des PNJ
         PNJ_Guide sin = new PNJ_Guide("SIN", "SIN", new String[]{"Bonjour !", "Comment puis-je vous aider ?"});
@@ -304,41 +304,18 @@ public class Jeu {
     private void parlerA(String personnage) {
         String message = actualPlayer.parler(personnage);
         gui.afficher(message);
+        gui.afficheImage(zoneCourante.nomImage());
     }
 
     private void prendreObjet(String nomObjet) {
-        if (nomObjet == null || nomObjet.trim().isEmpty()) {
-            gui.afficher("Que voulez-vous prendre ?");
-            return;
-        }
-        
-        Objet objet = zoneCourante.retirerObjet(nomObjet);
-        
-        if (objet == null) {
-            gui.afficher("Il n'y a pas de '" + nomObjet + "' ici.");
-            return;
-        }
-
-        actualPlayer.getInventaireJoueur().ajouterObjet(objet);
-        
-        gui.afficher("Vous avez pris : " + objet.getLabel());
+        String message = actualPlayer.prendreObjet(nomObjet);
+        gui.afficher(message);
+        gui.afficheImage(zoneCourante.nomImage());
     }
     
     private void afficherInventaire() {
-        List<Objet> objets = actualPlayer.getInventaireJoueur().getObjets();
-        
-        gui.afficher("=== INVENTAIRE ===");
-        if (objets.isEmpty()) {
-            gui.afficher("Votre inventaire est vide.");
-        } else {
-            gui.afficher("Contenu de l'inventaire :");
-            for (Objet obj : objets) {
-                gui.afficher("- " + obj.getLabel());
-            }
-        }
-        
-        gui.afficher("==================");
-        gui.afficher();
+        String message = actualPlayer.afficherInventaire();
+        gui.afficher(message);
     }
 
     private void inspecter(String element) {

@@ -4,7 +4,7 @@ import jeu.Objet;
 
 public class PNJ_ZamZam extends PNJ {
     private boolean hasGivenSandwich;
-    private Objet sandwich;
+    private final Objet sandwich;
 
     public PNJ_ZamZam(String unIdPNJ, String unNomPNJ, String[] tabInterractions) {
         super(unIdPNJ, unNomPNJ, tabInterractions);
