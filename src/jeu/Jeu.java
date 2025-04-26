@@ -254,7 +254,7 @@ public class Jeu implements Serializable {
         Zone hallEtage3 = new Zone("hall 3ème étage", "hallEtage3.png");
         Zone bureauBde = new Zone("Bureau BDE", "bureauBdeCoffreFerme.png", "bureauBdeCoffreOuvert.png");
 
-        // Ajout des PNJ
+        // Ajout questions & création des PNJ
         PNJ_Guide sin = new PNJ_Guide("SIN",
                 "SIN",
                 new String[]{"Bonjour !",
@@ -271,48 +271,13 @@ public class Jeu implements Serializable {
                         "Que puis-je vous servir ?"});
 
         // Ajout des professeurs avec leurs questions
-        PNJ_Prof profQualite = new PNJ_Prof("PROF_QUAL",
-                "1 -Professeur de Qualité",
-                new String[]{"Bonjour !", "Prêt pour le cours ?"},
-                MAISON,
-                60,
-                "Management de la qualité"
-                );
+        PNJ_Prof profTransfo = getPnjProfTransfo();
+        PNJ_Prof profQualite = getPnjProfQualite();
+        PNJ_Prof profAnglais = getPnjProfAnglais();
+        PNJ_Prof profAlgo = getPnjProfAlgo();
+        PNJ_Prof profGestion = getPnjProfGestion();
 
-        PNJ_Prof profTransfo = new PNJ_Prof("PROF_TRANS",
-                "1 -Professeur de Transformation",
-                new String[]{"Bonjour !", "Prêt pour le cours ?"},
-                GUIDE_INTEGRATION,
-                60,
-                "Transformation numérique");
-
-        PNJ_Prof profAnglais = new PNJ_Prof("PROF_ANG",
-                "1 -Professeur d'anglais",
-                new String[]{"Hello !", "Ready for class ?"},
-                ARTICLE_BANGLADESH,
-                60,
-                "Anglais");
-
-        PNJ_Prof profAlgo = new PNJ_Prof("PROF_ALGO",
-                "1 - Professeur d'algorithmique",
-                new String[]{"Bonjour !", "Prêt pour le cours ?"},
-                ON2,
-                60,
-                "Algorithmique");
-
-        PNJ_Prof profGestion = new PNJ_Prof("PROF_GEST",
-                "1 -Professeur de gestion",
-                new String[]{"Bonjour !", "Prêt pour le cours ?"},
-                SCRUM_BOOK,
-                60,
-                "Gestion de projet SCRUM");
-
-        PNJ_Prof profWooclip = new PNJ_Prof("PROF_GEST",
-                "2 -Ordinateur",
-                new String[]{"BIENVENUE DANS LE QUIZZ WOOCLOP, PREPAREZ VOUS POUR LE TEST"},
-                CLE_USB,
-                60,
-                "Gestion de projet");
+        PNJ_Prof profWooclip = getPnjProfWooclip();
 
         // Ajout des PNJ aux zones
         hallEntree.setPNJ(sin);
@@ -327,21 +292,11 @@ public class Jeu implements Serializable {
 
         // Ajout des objets dans les zones
         hallEntree.ajouterObjet(CAFE);
-
         bureauAdministration.ajouterObjet(CERTIFICATION);
-
-        // Objets clés
-//        salle001.ajouterObjet(MAISON);
-//        salle101.ajouterObjet(GUIDE_INTEGRATION);
-//        salle201.ajouterObjet(ARTICLE_BANGLADESH);
-//        salle204.ajouterObjet(ON2);
-//        salle218.ajouterObjet(SCRUM_BOOK);
-//        salle218.ajouterObjet(CLE_USB);
-
         salleDePause.ajouterObjet(CHAT_GPT);
         zamZam.ajouterObjet(KEBAB);
-        // bureauBde.ajouterObjet(MASCOTTE); // La mascotte sera ajoutée uniquement quand on ouvre le coffre
 
+        //## AJOUT DES DIFFERENTES SORTIES##
         //Parking
         parking.ajouteSortie(Sortie.NORD, zamZam);
         parking.ajouteSortie(Sortie.OUEST, hallEntree);
@@ -423,6 +378,213 @@ public class Jeu implements Serializable {
 
 
         zoneCourante = hallEntree;
+    }
+
+    // GENERATE ALL PROF
+    private PNJ_Prof getPnjProfTransfo() {
+        PNJ_Prof profTransfo = new PNJ_Prof("PROF_TRANSFO",
+                "1 -Professeur de Transformation",
+                new String[]{"Bonjour !", "Prêt pour le cours ?"},
+                GUIDE_INTEGRATION,
+                60,
+                "Transformation numérique");
+
+        Question question1Transfo = new Question(1,
+                "Dans quel évènement historique Napoléon a perdu car il n'a pas intégré les acteurs ? \n" +
+                        "A- Bataille de Waterloo \n" +
+                        "B- La révolution francaise \n" +
+                        "C- Pendant la guerre des étoiles \n",
+                "A");
+
+        Question question2Transfo = new Question(2,
+                "Comment éviter les résistances aux changements ? \n" +
+                        "A- Il faut intégrer les acteurs \n" +
+                        "B- Il faut les menacer \n" +
+                        "C- La réponse C \n",
+                "A");
+
+        Question question3Transfo = new Question(3,
+                "Comment faire évoluer une entreprise ? \n" +
+                        "A- En faisant de la transformation numérique \n" +
+                        "B- En agrandissanr les locaux \n" +
+                        "C- En faisant gagner un niveau sur la route 3 \n",
+                "A");
+        profTransfo.ajouterQuestion(question1Transfo);
+        profTransfo.ajouterQuestion(question2Transfo);
+        profTransfo.ajouterQuestion(question3Transfo);
+        return profTransfo;
+    }
+    private PNJ_Prof getPnjProfQualite(){
+        PNJ_Prof profQualite = new PNJ_Prof("PROF_QUAL",
+                "1 -Professeur de Qualité",
+                new String[]{"Bonjour !", "Prêt pour le cours ?"},
+                MAISON,
+                60,
+                "Management de la qualité"
+        );
+        Question question1Qualite = new Question(1,
+                "La gestion de la qualité c'est... ? \n" +
+                        "A- Bien. \n" +
+                        "B- Etre capable de creer de la VA dans son entreprise \n" +
+                        "C- Savoir faire un truc bien. \n",
+                "B");
+
+        Question question2Qualite = new Question(2,
+                "Comment optimiser une chaine de production ? \n" +
+                        "A- En localisants les goulots d'etranglements et en les gérants \n" +
+                        "B- Il faut menacer les travailleurs \n" +
+                        "C- La réponse C \n",
+                "C");
+
+        Question question3Qualite = new Question(3,
+                "Qu'est ce que Ishikawa ? \n" +
+                        "A- Un graphique de causes et effets \n" +
+                        "B- Un outils de gestions de normes \n" +
+                        "C- Une méchante technique d'immobilisation (franchement balèze) \n",
+                "A");
+
+        profQualite.ajouterQuestion(question1Qualite);
+        profQualite.ajouterQuestion(question2Qualite);
+        profQualite.ajouterQuestion(question3Qualite);
+        return profQualite;
+    }
+    private PNJ_Prof getPnjProfAnglais(){
+        PNJ_Prof profAnglais = new PNJ_Prof("PROF_ANG",
+                "1 -Professeur d'anglais",
+                new String[]{"Hello !", "Ready for class ?"},
+                ARTICLE_BANGLADESH,
+                60,
+                "Anglais");
+
+        Question question1 = new Question(1,
+                "How are you ? \n" +
+                        "A- Yellow. \n" +
+                        "B- Fine, thanks a lot \n" +
+                        "C- Muy bien i tu ? \n",
+                "B");
+
+        Question question2 = new Question(2,
+                "Is it a good situation to be in vocational training? \n" +
+                        "A- привет \n" +
+                        "B- I like trains a lot yes \n" +
+                        "C- Yes, i like to practice and improve my professional skills ! \n",
+                "C");
+
+        Question question3 = new Question(3,
+                "What do you think about AI ? \n" +
+                        "A- It can be a usefully thing, if it's only used as a tool, not a way to achieve things  \n" +
+                        "B- It's a good spice but you mean garlic, isn't it ? \n" +
+                        "C- I think you are a good teacher, but that's not very professional to ask that no ? \n",
+                "A");
+
+        profAnglais.ajouterQuestion(question1);
+        profAnglais.ajouterQuestion(question2);
+        profAnglais.ajouterQuestion(question3);
+        return profAnglais;
+    }
+    private PNJ_Prof getPnjProfAlgo(){
+
+        PNJ_Prof profAlgo = new PNJ_Prof("PROF_ALGO",
+                "1 - Professeur d'algorithmique",
+                new String[]{"Bonjour !", "Prêt pour le cours ?"},
+                ON2,
+                60,
+                "Algorithmique");
+
+        Question question1 = new Question(1,
+                "Qu'est ce que la complexité ? \n" +
+                        "A- C'est dur. \n" +
+                        "B- L'étude de la quantité de ressources (par exemple de temps ou d'espace) nécessaire à l'exécution d'un algorithme.  \n" +
+                        "C- Je ne sais pas \n",
+                "B");
+
+        Question question2 = new Question(2,
+                "La complexité d'un if () ? \n" +
+                        "A- 1 \n" +
+                        "B- n \n" +
+                        "C- Oui \n",
+                "C");
+
+        Question question3 = new Question(3,
+                "Un algorithme c'est ? \n" +
+                        "A- Une description d'une suite d'étapes permettant d'obtenir un résultat à partir d'éléments fournis en entrée.  \n" +
+                        "B- Du truc magique qui fait pleins de choses \n" +
+                        "C- Bonne question \n",
+                "A");
+
+        profAlgo.ajouterQuestion(question1);
+        profAlgo.ajouterQuestion(question2);
+        profAlgo.ajouterQuestion(question3);
+        return profAlgo;
+    }
+    private PNJ_Prof getPnjProfGestion(){
+
+        PNJ_Prof profGestion = new PNJ_Prof("PROF_GEST",
+                "1 -Professeur de gestion",
+                new String[]{"Bonjour !", "Prêt pour le cours ?"},
+                SCRUM_BOOK,
+                60,
+                "Gestion de projet SCRUM");
+
+        Question question1 = new Question(1,
+                "C'est quoi la méthode AGILE ? \n" +
+                        "A- C'est une approche qui permet d'apporter souplesse et performance à la gestion de projet et centrée sur l'humain et la communication \n" +
+                        "B- C'est une méthode où on organise un projet de manière stricte et organisée \n" +
+                        "C- Le fait d'être souple \n",
+                "A");
+
+        Question question2 = new Question(2,
+                "Les 3 piliers SCRUM sont ? \n" +
+                        "A- Procrastination \n" +
+                        "B- Post-It \n" +
+                        "C- Transparence, Inspection et Adaptation \n",
+                "C");
+
+        Question question3 = new Question(3,
+                "Qu'est ce qu'un SCRUM Master ? \n" +
+                        "A- Assurer l'implication de chaque membre et de les aider à franchir les différents obstacles qu'ils pourraient rencontrer \n" +
+                        "B- Les gouverner tous. Les trouver. Un Anneau pour les amener tous et dans les ténèbres les lier. \n" +
+                        "C- Spécifique Mesurable Atteignable Réaliste Transmissible \n",
+                "A");
+
+        profGestion.ajouterQuestion(question1);
+        profGestion.ajouterQuestion(question2);
+        profGestion.ajouterQuestion(question3);
+        return profGestion;
+    }
+    private PNJ_Prof getPnjProfWooclip(){
+        PNJ_Prof profWooclip = new PNJ_Prof("PROF_GEST",
+                "2 -Ordinateur",
+                new String[]{"BIENVENUE DANS LE QUIZZ WOOCLOP, PREPAREZ VOUS POUR LE TEST"},
+                CLE_USB,
+                60,
+                "Gestion de projet");
+
+        Question question1 = new Question(1,
+                "C'est quoi un KANBAN ? \n" +
+                        "A- Un système de planification pour la fabrication à flux tendus \n" +
+                        "B- Une méthode d'intégration \n" +
+                        "C- Une onomatopée \n",
+                "A");
+
+        Question question2 = new Question(2,
+                "Qu'est ce qu'un jour homme ? \n" +
+                        "A- L'inverse d'un jour femme \n" +
+                        "B- Un jour réservé aux hommes \n" +
+                        "C- Une unité de mesure correspondant au travail d'une personne pendant une journée \n",
+                "C");
+
+        Question question3 = new Question(3,
+                "Que veut dire SMART ? \n" +
+                        "A- Spécifique Mesurable Atteignable Réaliste Temporairement défini  \n" +
+                        "B- Saucisson Moutarde Allouette Raclette Toboggan \n" +
+                        "C- Spécifique Mesurable Atteignable Réaliste Transmissible \n",
+                "A");
+
+        profWooclip.ajouterQuestion(question1);
+        profWooclip.ajouterQuestion(question2);
+        profWooclip.ajouterQuestion(question3);
+        return profWooclip;
     }
 
     private void afficherLocalisation() {
