@@ -1,9 +1,13 @@
 package jeu;
 
+import jeu.PNJ.*;
+import java.util.List;
+
 public class Joueur {
     private String pseudo;
     private Inventaire inventaireJoueur;
     private boolean isLogged;
+    private Zone zoneCourante;
 
     public Joueur(String unPseudo) {
         this.pseudo = unPseudo;
@@ -11,9 +15,59 @@ public class Joueur {
         this.isLogged = false;
     }
 
-    public String parler(String pnj) {
-        // TODO
-        return "";
+    public void setZoneCourante(Zone zone) {
+        this.zoneCourante = zone;
+    }
+
+    public String parler(String personnage) {
+        if (personnage == null || personnage.trim().isEmpty()) {
+            return "A qui voulez-vous parler ?";
+        }
+
+        List<PNJ> pnjs = zoneCourante.getPNJs();
+        if (pnjs.isEmpty()) {
+            return "Il n'y a personne ici à qui parler.";
+        }
+
+        for (PNJ pnj : pnjs) {
+            if (pnj.getNomPNJ().equalsIgnoreCase(personnage)) {
+                // Gestion des différents types de PNJ
+                if (pnj instanceof PNJ_Guide) {
+                    PNJ_Guide guide = (PNJ_Guide) pnj;
+                    return guide.donnerIndice();
+                } else if (pnj instanceof PNJ_Admin) {
+                    PNJ_Admin admin = (PNJ_Admin) pnj;
+                    String message = admin.donnerEmploiDuTemps();
+                    Objet emploiDuTemps = admin.getEmploiDuTemps();
+                    if (emploiDuTemps != null) {
+                        inventaireJoueur.ajouterObjet(emploiDuTemps);
+                        message += "\nVous avez reçu : " + emploiDuTemps.getLabel();
+                    }
+                    return message;
+                } else if (pnj instanceof PNJ_ZamZam) {
+                    PNJ_ZamZam zamZam = (PNJ_ZamZam) pnj;
+                    String message = zamZam.donnerSandwich();
+                    Objet sandwich = zamZam.getSandwich();
+                    if (sandwich != null) {
+                        inventaireJoueur.ajouterObjet(sandwich);
+                        message += "\nVous avez reçu : " + sandwich.getLabel();
+                    }
+                    return message;
+                } else if (pnj instanceof PNJ_Prof) {
+                    PNJ_Prof prof = (PNJ_Prof) pnj;
+                    return prof.donnerQuiz();
+                } else {
+                    // Pour les autres PNJ, afficher leurs dialogues de base
+                    StringBuilder message = new StringBuilder();
+                    for (String dialogue : pnj.getTexteInterraction()) {
+                        message.append(dialogue).append("\n");
+                    }
+                    return message.toString();
+                }
+            }
+        }
+
+        return "La personne que vous cherchez n'est pas ici.";
     }
 
     public void prendre(String objet) {

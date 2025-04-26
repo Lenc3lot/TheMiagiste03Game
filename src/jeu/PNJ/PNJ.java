@@ -15,6 +15,18 @@ abstract public class PNJ {
 
      public String donnerObjet(Objet objet){
         // TODO : Donne un objet et affiche un message
-         return "";
+         return "Voici " + objet.getLabel();
+     }
+
+     public String getNomPNJ() {
+         return nomPNJ;
+     }
+
+     public String getIdPNJ() {
+         return idPNJ;
+     }
+
+     public String[] getTexteInterraction() {
+         return texteInterraction;
      }
 }

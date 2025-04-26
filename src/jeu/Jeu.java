@@ -1,5 +1,9 @@
 package jeu;
 
+import jeu.PNJ.PNJ_Admin;
+import jeu.PNJ.PNJ_Prof;
+import jeu.PNJ.PNJ_ZamZam;
+import jeu.PNJ.PNJ_Guide;
 import netscape.javascript.JSObject;
 
 import java.util.List;
@@ -23,6 +27,7 @@ public class Jeu {
         historiqueZones = new Stack<>();
         actualPlayer = new Joueur("newJoueur");
         actualGameState = new Sauvegarde();
+        actualPlayer.setZoneCourante(zoneCourante);
     }
 
     public void setGUI( GUI g) {
@@ -58,6 +63,40 @@ public class Jeu {
         Zone hallEtage3 = new Zone("hall 3ème étage", "hallEtage3.png");
         Zone bureauBde = new Zone("Bureau BDE", "bureauBdeCoffreFerme.png");
 
+        // Ajout des PNJ
+        PNJ_Guide sin = new PNJ_Guide("SIN", "SIN", new String[]{"Bonjour !", "Comment puis-je vous aider ?"});
+        PNJ_Admin sandrine = new PNJ_Admin("SAND", "Sandrine", new String[]{"Bonjour !", "Je peux vous aider ?"});
+        PNJ_ZamZam chefZamZam = new PNJ_ZamZam("ZAM", "Chef du ZAM ZAM", new String[]{"Bienvenue au ZAM ZAM !", "Que puis-je vous servir ?"});
+
+        // Ajout des professeurs avec leurs questions
+        PNJ_Prof profQualite = new PNJ_Prof("PROF_QUAL", "Professeur de Qualité", new String[]{"Bonjour !", "Prêt pour le cours ?"}, 60, "Management de la qualité");
+        PNJ_Prof profTransfo = new PNJ_Prof("PROF_TRANS", "Professeur de Transformation", new String[]{"Bonjour !", "Prêt pour le cours ?"}, 60, "Transformation numérique");
+        PNJ_Prof profAnglais = new PNJ_Prof("PROF_ANG", "Professeur d'anglais", new String[]{"Hello !", "Ready for class ?"}, 60, "Anglais");
+        PNJ_Prof profAlgo = new PNJ_Prof("PROF_ALGO", "Professeur d'algorithmique", new String[]{"Bonjour !", "Prêt pour le cours ?"}, 60, "Algorithmique");
+        PNJ_Prof profGestion = new PNJ_Prof("PROF_GEST", "Professeur de gestion", new String[]{"Bonjour !", "Prêt pour le cours ?"}, 60, "Gestion de projet");
+
+        // Ajout des PNJ aux zones
+        hallEntree.setPNJ(sin);
+        bureauAdministration.setPNJ(sandrine);
+        zamZam.setPNJ(chefZamZam);
+        salle001.setPNJ(profQualite);
+        salle101.setPNJ(profTransfo);
+        salle201.setPNJ(profAnglais);
+        salle204.setPNJ(profAlgo);
+        salle218.setPNJ(profGestion);
+
+        // Ajout des objets dans les zones
+        hallEntree.ajouterObjet(Objet.CAFE);
+        bureauAdministration.ajouterObjet(Objet.CERTIFICATION);
+        salle001.ajouterObjet(Objet.MAISON);
+        salle101.ajouterObjet(Objet.GUIDE_INTEGRATION);
+        salle201.ajouterObjet(Objet.ARTICLE_BANGLADESH);
+        salle204.ajouterObjet(Objet.ON2);
+        salle218.ajouterObjet(Objet.SCRUM_BOOK);
+        salle218.ajouterObjet(Objet.CLE_USB);
+        salleDePause.ajouterObjet(Objet.CHAT_GPT);
+        zamZam.ajouterObjet(Objet.KEBAB);
+        bureauBde.ajouterObjet(Objet.MASCOTTE);
 
         //Parking
         parking.ajouteSortie(Sortie.NORD, zamZam);
@@ -250,6 +289,7 @@ public class Jeu {
 
         historiqueZones.push(zoneCourante);
         zoneCourante = nouvelleZone;
+        actualPlayer.setZoneCourante(zoneCourante);
 
         afficherLocalisation();
         gui.afficheImage(zoneCourante.nomImage());
@@ -262,7 +302,8 @@ public class Jeu {
     }
 
     private void parlerA(String personnage) {
-        // TODO: Implémenter la logique de dialogue avec un PNJ
+        String message = actualPlayer.parler(personnage);
+        gui.afficher(message);
     }
 
     private void prendreObjet(String nomObjet) {

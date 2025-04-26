@@ -1,4 +1,6 @@
 package jeu;
+import jeu.PNJ.PNJ;
+
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +11,7 @@ public class Zone
     private String nomImage;
     private HashMap<String,Zone> sorties;   
     private List<Objet> objets = new ArrayList<>();
+    private List<PNJ> pnjs = new ArrayList<>();
 
     public Zone(String description, String image) {
         this.description = description;
@@ -20,6 +23,18 @@ public class Zone
         sorties.put(sortie.name(), zoneVoisine);
     }
 
+    public void ajouterObjet(Objet objet) {
+        objets.add(objet);
+    }
+
+    public void setPNJ(PNJ pnj) {
+        pnjs.add(pnj);
+    }
+
+    public List<PNJ> getPNJs() {
+        return pnjs;
+    }
+
     public String nomImage() {
         return nomImage;
     }
@@ -29,7 +44,25 @@ public class Zone
     }
 
     public String descriptionLongue()  {
-        return "Vous êtes dans " + description + "\nSorties : " + sorties();
+        StringBuilder sb = new StringBuilder();
+        sb.append("Vous êtes dans ").append(description).append("\n");
+        sb.append("Sorties : ").append(sorties()).append("\n");
+        
+        if (!pnjs.isEmpty()) {
+            sb.append("Personnes présentes :\n");
+            for (PNJ pnj : pnjs) {
+                sb.append("- ").append(pnj.getNomPNJ()).append("\n");
+            }
+        }
+        
+        if (!objets.isEmpty()) {
+            sb.append("Objets visibles :\n");
+            for (Objet obj : objets) {
+                sb.append("- ").append(obj.getLabel()).append("\n");
+            }
+        }
+        
+        return sb.toString();
     }
 
     private String sorties() {
