@@ -96,7 +96,7 @@ public class Jeu {
         salle218.ajouterObjet(Objet.CLE_USB);
         salleDePause.ajouterObjet(Objet.CHAT_GPT);
         zamZam.ajouterObjet(Objet.KEBAB);
-        bureauBde.ajouterObjet(Objet.MASCOTTE);
+        // bureauBde.ajouterObjet(Objet.MASCOTTE); // La mascotte sera ajoutée uniquement quand on ouvre le coffre
 
         //Parking
         parking.ajouteSortie(Sortie.NORD, zamZam);
@@ -324,7 +324,9 @@ public class Jeu {
     }
 
     private void ouvrirConteneur(String conteneur) {
-        // TODO: Implémenter la logique d'ouverture de conteneur
+        String message = actualPlayer.ouvrir(conteneur);
+        gui.afficher(message);
+        gui.afficheImage(zoneCourante.nomImage());
     }
 
     private void utiliserObjet(String objet) {
@@ -348,11 +350,28 @@ public class Jeu {
     }
 
     private void afficherAide() {
-        gui.afficher("Etes-vous perdu ?");
+        gui.afficher("=== AIDE ===");
         gui.afficher();
-        gui.afficher("Les commandes autorisées sont :");
+        gui.afficher("Commandes de déplacement :");
+        gui.afficher("- ALLER [direction] : N (Nord), S (Sud), E (Est), O (Ouest), H (Haut), B (Bas)");
+        gui.afficher("- RETOUR : Retourner à la zone précédente");
+        gui.afficher("- TELEPORTER : Se téléporter à une zone");
         gui.afficher();
-        gui.afficher(Commande.toutesLesDescriptions().toString());
+        gui.afficher("Commandes d'interaction :");
+        gui.afficher("- INSPECTER : Examiner la zone actuelle");
+        gui.afficher("- PRENDRE [objet] : Prendre un objet (ou PRENDRE si un seul objet)");
+        gui.afficher("- OUVRIR [conteneur] : Ouvrir un conteneur (ou OUVRIR pour le coffre)");
+        gui.afficher("- PARLER [personnage] : Parler à un personnage");
+        gui.afficher("- UTILISER [objet] : Utiliser un objet de l'inventaire");
+        gui.afficher();
+        gui.afficher("Commandes de gestion :");
+        gui.afficher("- INVENTAIRE : Afficher votre inventaire");
+        gui.afficher("- CONNEXION [PSEUDO] : Se connecter au jeu");
+        gui.afficher("- SAUVEGARDER : Sauvegarder la partie");
+        gui.afficher("- CHARGER : Charger une partie sauvegardée");
+        gui.afficher("- QUITTER : Quitter le jeu");
+        gui.afficher();
+        gui.afficher("=== FIN AIDE ===");
         gui.afficher();
     }
     

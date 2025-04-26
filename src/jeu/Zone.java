@@ -65,13 +65,6 @@ public class Zone
             }
         }
         
-        if (!objets.isEmpty()) {
-            sb.append("Objets visibles :\n");
-            for (Objet obj : objets) {
-                sb.append("- ").append(obj.getLabel()).append("\n");
-            }
-        }
-        
         return sb.toString();
     }
 

@@ -79,13 +79,69 @@ public class Joueur {
     }
 
     public String inspecter(String element) {
-        // TODO : Doit retourner une string qui dit si la zone contient ou non un element a ouvrir ou prendre
-        return "";
+        // Si pas de paramètre, on inspecte la zone par défaut
+        if (element == null || element.trim().isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Vous examinez la zone :\n");
+            
+            // Afficher les objets
+            List<Objet> objets = zoneCourante.getObjets();
+            if (!objets.isEmpty()) {
+                sb.append("Objets visibles :\n");
+                for (Objet obj : objets) {
+                    sb.append("- ").append(obj.getLabel()).append("\n");
+                }
+            }
+            
+            // Afficher les coffres
+            if (zoneCourante.toString().equals("Bureau BDE")) {
+                sb.append("Coffres :\n");
+                sb.append("- Un coffre ");
+                if (zoneCourante.nomImage().equals("bureauBdeCoffreOuvert.png")) {
+                    sb.append("ouvert");
+                } else {
+                    sb.append("fermé");
+                }
+            }
+            
+            return sb.toString();
+        }
+        
+        return "Il n'y a rien à examiner ici.";
     }
 
     public String ouvrir(String conteneur) {
-        //TODO : Doit retourner une string qui dit que si quelque-chose est dans l'élément ouvert
-        return "";
+        // Si pas de paramètre et qu'on est dans le bureau BDE, on ouvre le coffre par défaut
+        if (conteneur == null || conteneur.trim().isEmpty()) {
+            if (zoneCourante.toString().equals("Bureau BDE")) {
+                if (zoneCourante.nomImage().equals("bureauBdeCoffreOuvert.png")) {
+                    return "Le coffre est déjà ouvert !";
+                }
+                
+                zoneCourante.changerImage("bureauBdeCoffreOuvert.png");
+                
+                Objet mascotte = Objet.MASCOTTE;
+                inventaireJoueur.ajouterObjet(mascotte);
+                
+                return "BRAVO ! Vous avez trouvé la mascotte du BDE !";
+            }
+            return "Que voulez-vous ouvrir ?";
+        }
+
+        if (zoneCourante.toString().equals("Bureau BDE") && conteneur.equalsIgnoreCase("COFFRE")) {
+            if (zoneCourante.nomImage().equals("bureauBdeCoffreOuvert.png")) {
+                return "Le coffre est déjà ouvert !";
+            }
+            
+            zoneCourante.changerImage("bureauBdeCoffreOuvert.png");
+            
+            Objet mascotte = Objet.MASCOTTE;
+            inventaireJoueur.ajouterObjet(mascotte);
+            
+            return "BRAVO ! Vous avez trouvé la mascotte du BDE !";
+        }
+        
+        return "Il n'y a pas de '" + conteneur + "' à ouvrir ici.";
     }
 
     public String utiliser(String objet) {
@@ -113,7 +169,15 @@ public class Joueur {
     }
 
     public String prendreObjet(String nomObjet) {
+        // Si pas de paramètre et qu'il n'y a qu'un seul objet, on le prend par défaut
         if (nomObjet == null || nomObjet.trim().isEmpty()) {
+            List<Objet> objets = zoneCourante.getObjets();
+            if (objets.size() == 1) {
+                Objet objet = objets.get(0);
+                zoneCourante.retirerObjet(objet.getLabel());
+                inventaireJoueur.ajouterObjet(objet);
+                return "Vous avez pris : " + objet.getLabel();
+            }
             return "Que voulez-vous prendre ?";
         }
         
