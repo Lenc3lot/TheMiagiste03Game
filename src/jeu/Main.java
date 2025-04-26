@@ -4,5 +4,9 @@ public class Main {
 		Jeu jeu = new Jeu();
 		GUI gui = new GUI( jeu);
 		jeu.setGUI( gui);
+		Compteur compteur = new Compteur(600,gui);
+		Thread threadCompteur = new Thread(compteur);
+		threadCompteur.start();
+		jeu.setCompteur(compteur,threadCompteur);
 	}
 }

@@ -10,11 +10,17 @@ public class GUI implements ActionListener
     private JFrame fenetre;
     private JTextField entree;
     private JTextArea texte;
+    private JTextArea zoneCompteur;
     private JLabel image;
 
     public GUI(Jeu j) {
         jeu = j;
         creerGUI();
+    }
+
+    public void afficherCompteur (String cpt){
+        zoneCompteur.setText(cpt);
+        zoneCompteur.setCaretPosition(zoneCompteur.getDocument().getLength());
     }
 
     public void afficher(String s) {
@@ -47,9 +53,16 @@ public class GUI implements ActionListener
 
         texte = new JTextArea();
         texte.setEditable(false);
+        zoneCompteur = new JTextArea();
+        zoneCompteur.setEditable(false);
         JScrollPane listScroller = new JScrollPane(texte);
+        JScrollPane textScroller = new JScrollPane(zoneCompteur);
+
         listScroller.setPreferredSize(new Dimension(200, 200));
         listScroller.setMinimumSize(new Dimension(100,100));
+
+        textScroller.setPreferredSize(new Dimension(200, 200));
+        textScroller.setMinimumSize(new Dimension(100,100));
 
         JPanel panel = new JPanel();
         image = new JLabel();
@@ -57,6 +70,7 @@ public class GUI implements ActionListener
         panel.setLayout(new BorderLayout());
         panel.add(image, BorderLayout.NORTH);
         panel.add(listScroller, BorderLayout.CENTER);
+        panel.add(textScroller, BorderLayout.WEST);
         panel.add(entree, BorderLayout.SOUTH);
 
         fenetre.getContentPane().add(panel, BorderLayout.CENTER);

@@ -2,9 +2,13 @@ package jeu;
 
 public class Joueur {
     private String pseudo;
+    private Inventaire inventaireJoueur;
+    private boolean isLogged;
 
     public Joueur(String unPseudo) {
         this.pseudo = unPseudo;
+        this.inventaireJoueur = new Inventaire();
+        this.isLogged = false;
     }
 
     public String parler(String pnj) {
@@ -31,7 +35,24 @@ public class Joueur {
         return "";
     }
 
+    public void setPseudo(String pseudo) {
+        if (!isLogged){
+            this.pseudo = pseudo;
+            this.isLogged = true;
+        }
+    }
 
+    public String getPseudo(){
+        return this.pseudo;
+    }
+
+    public boolean isLogged() {
+        return isLogged;
+    }
+
+    public Inventaire getInventaireJoueur() {
+        return inventaireJoueur;
+    }
 }
 
 

@@ -14,6 +14,9 @@ public enum Commande {
 	RETOUR("RETOUR", "RETOUR (retourner à la zone précédente)"),
 	TELEPORTER("TELEPORTER", "TELEPORTER (se téléporter à une zone)"),
 	QUITTER("QUITTER", "QUITTER (quitter le jeu)"),
+	CONNEXION("CONNEXION","CONNEXION [PSEUDO]"),
+	SAUVEGARDER("SAUVEGARDER","SAUVEGARDER (sauvegarde la partie)"),
+	CHARGER("CHARGER","CHARGER (nécessite d'être connecté)"),
 	AIDE("?", "? (aide)");
 
 	private String abreviation;
@@ -30,7 +33,7 @@ public enum Commande {
 	public static List<String> toutesLesDescriptions() { 
 		ArrayList<String> resultat = new ArrayList<String>();
 		for(Commande c : values()) {
-			resultat.add(c.description);
+			resultat.add(c.description + "\n");
 		}
 		return resultat;
 	}

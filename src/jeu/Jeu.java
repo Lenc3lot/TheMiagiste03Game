@@ -10,24 +10,30 @@ public class Jeu {
 	
     private GUI gui; 
 	private Zone zoneCourante;
-    private String PATH_TO_SAVES = "";
-    private JSObject loadedGameSave;
-    private Stack<Zone> historiqueZones; // Pour la commande RETOUR
-    private Inventaire inventaire; // Pour gérer l'inventaire du joueur
-    
+    private String PATH_TO_SAVES = "savedFiles\\";
+    private Sauvegarde actualGameState;
+    private Joueur actualPlayer;
+    private Stack<Zone> historiqueZones;
+    private Compteur compteur;
+    private Thread threadCompteur;
+
     public Jeu() {
         creerCarte();
         gui = null;
         historiqueZones = new Stack<>();
-        inventaire = new Inventaire();
+        actualPlayer = new Joueur("newJoueur");
+        actualGameState = new Sauvegarde();
     }
 
-    public void setGUI( GUI g) { gui = g; afficherMessageDeBienvenue(); }
+    public void setGUI( GUI g) {
+        gui = g; afficherMessageDeBienvenue();
+    }
     
     private void creerCarte() {
         //Exterieur
         Zone zamZam = new Zone("Zam Zam", "ZamZamAvecKebab.png");
         Zone parking = new Zone("Parking", "Parking.png");
+
         //RDC
         Zone hallEntree = new Zone("Hall d'entrée", "hallEntree.png");
         Zone couloirRdcEst = new Zone("couloir RDC Est", "CouloirEst.png");
@@ -56,7 +62,6 @@ public class Jeu {
         //Parking
         parking.ajouteSortie(Sortie.NORD, zamZam);
         parking.ajouteSortie(Sortie.OUEST, hallEntree);
-
 
         //ZamZam
         zamZam.ajouteSortie(Sortie.SUD, parking);
@@ -134,7 +139,7 @@ public class Jeu {
         bureauBde.ajouteSortie(Sortie.OUEST, hallEtage3);
 
 
-        zoneCourante = hallEtage3;
+        zoneCourante = hallEntree;
     }
 
     private void afficherLocalisation() {
@@ -192,11 +197,32 @@ public class Jeu {
             case "AIDE":
                 afficherAide();
                 break;
+            case "CONNEXION":
+                if (!actualPlayer.isLogged()){
+                    actualPlayer.setPseudo(parametre);
+                    gui.afficher("Connecté en tant que : "+ parametre);
+                }else{
+                    gui.afficher("Vous êtes déja connecté !");
+                };
+                break;
+            case "SAUVEGARDE":
+                sauvegarderJeu();
+                gui.afficher("Sauvegarde réussie !");
+                break;
+            case "CHARGER":
+                if(!actualPlayer.isLogged()){
+                    gui.afficher("Vous n'êtes pas connecté !");
+                }else{
+                    // TODO : charger les éléments de sauvegarde
+                    gui.afficher("Partie chargée !");
+                }
+                break;
             default:
                 gui.afficher("Commande inconnue");
                 break;
         }
     }
+
     private static final Map<String, String> directionsMap = Map.of(
     	    "N", "NORD",
     	    "S", "SUD",
@@ -251,14 +277,14 @@ public class Jeu {
             gui.afficher("Il n'y a pas de '" + nomObjet + "' ici.");
             return;
         }
-        
-        inventaire.ajouterObjet(objet);
+
+        actualPlayer.getInventaireJoueur().ajouterObjet(objet);
         
         gui.afficher("Vous avez pris : " + objet.getLabel());
     }
     
     private void afficherInventaire() {
-        List<Objet> objets = inventaire.getObjets();
+        List<Objet> objets = actualPlayer.getInventaireJoueur().getObjets();
         
         gui.afficher("=== INVENTAIRE ===");
         if (objets.isEmpty()) {
@@ -313,7 +339,32 @@ public class Jeu {
     }
     
     private void terminer() {
+        sauvegarderJeu();
+        threadCompteur.interrupt();
     	gui.afficher( "Au revoir...");
     	gui.enable( false);
+        System.exit(0);
+    }
+
+    public void sauvegarderJeu(){
+        actualGameState.setMember("playerPseudo",actualPlayer.getPseudo());
+        actualGameState.setMember("zoneCourante",zoneCourante);
+        actualGameState.setMember("inventaireJoueur",actualPlayer.getInventaireJoueur());
+        actualGameState.setMember("historiqueZones",historiqueZones);
+        actualGameState.setMember("acutalTimeLeft",compteur.getTimeLeft());
+        actualGameState.writeSave(PATH_TO_SAVES);
+    }
+
+    public JSObject getActualGameState(){
+        return this.actualGameState;
+    }
+
+    public void setZoneCourante(Zone zoneCourante){
+        this.zoneCourante = zoneCourante;
+    }
+
+    public void setCompteur(Compteur actualCompteur, Thread threadCompteur){
+        this.compteur = actualCompteur;
+        this.threadCompteur = threadCompteur;
     }
 }
