@@ -319,8 +319,9 @@ public class Jeu {
     }
 
     private void inspecter(String element) {
-        // TODO: Implémenter la logique d'inspection
-        // Afficher la description détaillée de l'élément
+        String message = actualPlayer.inspecter(element);
+        gui.afficher(message);
+        gui.afficheImage(zoneCourante.nomImage());
     }
 
     private void ouvrirConteneur(String conteneur) {
