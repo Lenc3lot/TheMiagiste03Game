@@ -1,8 +1,7 @@
 package jeu;
 
 public  class Compteur implements Runnable {
-//    private int secondes = 1080;
-    private int secondes = 470;
+    private int secondes = 1080;
     private GUI gui;
     private int startingTime = 465;
     private Jeu currentJeu;
@@ -16,7 +15,7 @@ public  class Compteur implements Runnable {
         try {
             while (startingTime <= secondes) {
                 gui.afficherCompteur("Heure acutelle : " + ((startingTime % 86400) % 3600) / 60 +" H " + ((startingTime % 86400) % 3600) % 60 + " ");
-                Thread.sleep(1000); // attendre 1 seconde
+                Thread.sleep(2000); // attendre 2 secondes
                 startingTime++;
             }
             timeIsOut();
