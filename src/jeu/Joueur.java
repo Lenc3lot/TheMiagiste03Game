@@ -1,9 +1,9 @@
 package jeu;
 
+import java.io.Serializable;
 import jeu.PNJ.*;
 import java.util.List;
-
-public class Joueur {
+public class Joueur  implements Serializable{
     private String pseudo;
     private Inventaire inventaireJoueur;
     private boolean isLogged;
@@ -74,7 +74,7 @@ public class Joueur {
         if (element == null || element.trim().isEmpty()) {
             StringBuilder sb = new StringBuilder();
             sb.append("Vous examinez la zone :\n");
-            
+
             // Afficher les objets
             List<Objet> objets = zone.getObjets();
             if (!objets.isEmpty()) {
@@ -83,7 +83,7 @@ public class Joueur {
                     sb.append("- ").append(obj.getLabel()).append("\n");
                 }
             }
-            
+
             // Afficher les coffres
             if (zone.toString().equals("Bureau BDE")) {
                 sb.append("Coffres :\n");
@@ -94,10 +94,10 @@ public class Joueur {
                     sb.append("fermé");
                 }
             }
-            
+
             return sb.toString();
         }
-        
+
         return "Il n'y a rien à examiner ici.";
     }
 
@@ -108,12 +108,12 @@ public class Joueur {
                 if (zone.nomImage().equals("bureauBdeCoffreOuvert.png")) {
                     return "Le coffre est déjà ouvert !";
                 }
-                
+
                 zone.changerImage("bureauBdeCoffreOuvert.png");
-                
+
                 Objet mascotte = Objet.MASCOTTE;
                 inventaireJoueur.ajouterObjet(mascotte);
-                
+
                 return "BRAVO ! Vous avez trouvé la mascotte du BDE !";
             }
             return "Que voulez-vous ouvrir ?";
@@ -123,15 +123,15 @@ public class Joueur {
             if (zone.nomImage().equals("bureauBdeCoffreOuvert.png")) {
                 return "Le coffre est déjà ouvert !";
             }
-            
+
             zone.changerImage("bureauBdeCoffreOuvert.png");
-            
+
             Objet mascotte = Objet.MASCOTTE;
             inventaireJoueur.ajouterObjet(mascotte);
-            
+
             return "BRAVO ! Vous avez trouvé la mascotte du BDE !";
         }
-        
+
         return "Il n'y a pas de '" + conteneur + "' à ouvrir ici.";
     }
 
@@ -159,6 +159,10 @@ public class Joueur {
         return inventaireJoueur;
     }
 
+    public void setInventaireJoueur(Inventaire inventaireJoueur) {
+        this.inventaireJoueur = inventaireJoueur;
+    }
+
     public String prendreObjet(String nomObjet, Zone zone) {
         // Si pas de paramètre et qu'il n'y a qu'un seul objet, on le prend par défaut
         if (nomObjet == null || nomObjet.trim().isEmpty()) {
@@ -171,9 +175,9 @@ public class Joueur {
             }
             return "Que voulez-vous prendre ?";
         }
-        
+
         Objet objet = zone.retirerObjet(nomObjet);
-        
+
         if (objet == null) {
             return "Il n'y a pas de '" + nomObjet + "' ici.";
         }
@@ -185,7 +189,7 @@ public class Joueur {
     public String afficherInventaire() {
         List<Objet> objets = inventaireJoueur.getObjets();
         StringBuilder sb = new StringBuilder();
-        
+
         sb.append("=== INVENTAIRE ===\n");
         if (objets.isEmpty()) {
             sb.append("Votre inventaire est vide.\n");
@@ -196,7 +200,7 @@ public class Joueur {
             }
         }
         sb.append("==================\n");
-        
+
         return sb.toString();
     }
 }

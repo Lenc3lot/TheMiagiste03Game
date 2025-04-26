@@ -6,15 +6,16 @@ import jeu.PNJ.PNJ_ZamZam;
 import jeu.PNJ.PNJ_Guide;
 import netscape.javascript.JSObject;
 
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-public class Jeu {
+public class Jeu implements Serializable {
 	
     private GUI gui; 
 	private Zone zoneCourante;
-    private String PATH_TO_SAVES = "savedFiles\\";
     private Sauvegarde actualGameState;
     private Joueur actualPlayer;
     private Stack<Zone> historiqueZones;
@@ -238,6 +239,7 @@ public class Jeu {
             case "CONNEXION":
                 if (!actualPlayer.isLogged()){
                     actualPlayer.setPseudo(parametre);
+                    actualGameState.setMember("playerPseudo",parametre);
                     gui.afficher("Connecté en tant que : "+ parametre);
                 }else{
                     gui.afficher("Vous êtes déja connecté !");
@@ -252,6 +254,13 @@ public class Jeu {
                     gui.afficher("Vous n'êtes pas connecté !");
                 }else{
                     // TODO : charger les éléments de sauvegarde
+                    HashMap<String, Object> loadSave = actualGameState.loadSave();
+                    compteur.setTimeBack(Integer.parseInt(loadSave.get("acutalTimeLeft").toString()));
+                    setZoneCourante((Zone) loadSave.get("zoneCourante"));
+                    afficherLocalisation();
+                    gui.afficheImage(zoneCourante.nomImage());
+                    historiqueZones = (Stack<Zone>) loadSave.get("historiqueZones");
+                    actualPlayer.setInventaireJoueur((Inventaire) loadSave.get("inventaireJoueur"));
                     gui.afficher("Partie chargée !");
                 }
                 break;
@@ -388,7 +397,7 @@ public class Jeu {
         actualGameState.setMember("inventaireJoueur",actualPlayer.getInventaireJoueur());
         actualGameState.setMember("historiqueZones",historiqueZones);
         actualGameState.setMember("acutalTimeLeft",compteur.getTimeLeft());
-        actualGameState.writeSave(PATH_TO_SAVES);
+        actualGameState.writeSave();
     }
 
     public JSObject getActualGameState(){

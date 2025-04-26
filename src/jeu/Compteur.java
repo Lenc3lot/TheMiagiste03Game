@@ -26,5 +26,9 @@ public  class Compteur implements Runnable {
     public int getTimeLeft(){
         return secondes;
     }
+
+    public void setTimeBack(int timeLeftLoaded){
+        this.secondes = timeLeftLoaded;
+    }
 }
 

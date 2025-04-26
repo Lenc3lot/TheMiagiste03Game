@@ -1,16 +1,17 @@
 package jeu;
+import java.io.Serializable;
 import jeu.PNJ.PNJ;
+
 
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Zone 
-{
+public class Zone implements Serializable {
     private String description;
     private String nomImage;
     private String nomImageSansObjet;  // Image à afficher quand l'objet est pris
-    private HashMap<String,Zone> sorties;   
+    private HashMap<String,Zone> sorties;
     private List<Objet> objets = new ArrayList<>();
     private List<PNJ> pnjs = new ArrayList<>();
 
@@ -48,7 +49,7 @@ public class Zone
     public void changerImage(String nouvelleImage) {
         this.nomImage = nouvelleImage;
     }
-     
+
     public String toString() {
         return description;
     }
@@ -57,14 +58,14 @@ public class Zone
         StringBuilder sb = new StringBuilder();
         sb.append("Vous êtes dans ").append(description).append("\n");
         sb.append("Sorties : ").append(sorties()).append("\n");
-        
+
         if (!pnjs.isEmpty()) {
             sb.append("Personnes présentes :\n");
             for (PNJ pnj : pnjs) {
                 sb.append("- ").append(pnj.getNomPNJ()).append("\n");
             }
         }
-        
+
         return sb.toString();
     }
 

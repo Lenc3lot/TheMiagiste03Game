@@ -4,37 +4,65 @@ import netscape.javascript.JSException;
 import netscape.javascript.JSObject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
-public class Sauvegarde extends JSObject {
+public class Sauvegarde extends JSObject implements Serializable{
     private Map<String, Object> savedMap;
+    private String PATH_TO_SAVES = "./src/jeu/savedFiles/";
+    @Serial
+    private  static  final  long serialVersionUID =  1350092881346723535L;
 
     public Sauvegarde(){
         savedMap = new HashMap<>();
     }
 
-    public void writeSave(String pathToSave){
-        String path = "./savedFiles/";
-        String fileName = savedMap.get("playerPseudo").toString() +"_test.txt";
-        File saveFile = new File(fileName);
+    public void writeSave(){
+        String fileName = savedMap.get("playerPseudo").toString() +"_test.ser";
+        File saveFile = new File(PATH_TO_SAVES+fileName);
         try {
+            if(saveFile.exists()){
+                if(saveFile.delete()){
+                    System.out.println("File deleted");
+                };
+            }
             if (saveFile.createNewFile()) {
-                FileWriter fileWriter = new FileWriter(pathToSave + fileName + "_test.txt");
-                fileWriter.write("coucou");
-                fileWriter.close();
+//                FileWriter fileWriter = new FileWriter(PATH_TO_SAVES + fileName);
+//                fileWriter.write(savedMap.toString());
+//                fileWriter.close();
+                FileOutputStream fileOutputStream = new FileOutputStream(saveFile);
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+                objectOutputStream.writeObject(savedMap);
+                objectOutputStream.close();
+                fileOutputStream.close();
             }
         }catch (IOException e){
             System.out.println();
         }
     }
 
+    public HashMap<String, Object> loadSave(){
+        String fileName = savedMap.get("playerPseudo").toString() +"_test.ser";
+        File saveFile = new File(PATH_TO_SAVES+fileName);
+        try{
+            FileInputStream fileIn = new FileInputStream(saveFile);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileIn);
+            HashMap<String,Object> loadedData = (HashMap<String, Object>) objectInputStream.readObject();
+            objectInputStream.close();
+            return loadedData;
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public Object getMember(String name) throws JSException {
         return savedMap.get(name);
-
     }
 
     @Override
