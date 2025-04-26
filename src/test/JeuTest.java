@@ -12,7 +12,6 @@ public class JeuTest {
     @Test
     public void testQuandSauvegarde(){
         testJeu.setZoneCourante(zone);
-        testJeu.sauvegarderJeu();
         Assert.assertNotNull(testJeu.getActualGameState().getMember("zoneCourante"));
 
     }

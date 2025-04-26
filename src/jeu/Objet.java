@@ -1,6 +1,8 @@
 package jeu;
 
-public class Objet {
+import java.io.Serializable;
+
+public class Objet implements Serializable {
     private String idObjet;
     private String labelObjet;
     private boolean isKeyObject;

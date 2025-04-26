@@ -21,6 +21,7 @@ public class Jeu implements Serializable {
     private Stack<Zone> historiqueZones;
     private Compteur compteur;
     private Thread threadCompteur;
+    private boolean isTimeOut = false;
 
     public Jeu() {
         creerCarte();
@@ -33,7 +34,173 @@ public class Jeu implements Serializable {
     public void setGUI( GUI g) {
         gui = g; afficherMessageDeBienvenue();
     }
+
+    public void sauvegarderJeu(){
+        actualGameState.setMember("playerPseudo",actualPlayer.getPseudo());
+        actualGameState.setMember("zoneCourante",zoneCourante);
+        actualGameState.setMember("inventaireJoueur",actualPlayer.getInventaireJoueur());
+        actualGameState.setMember("historiqueZones",historiqueZones);
+        actualGameState.setMember("acutalTimeLeft",compteur.getTimeLeft());
+        actualGameState.writeSave();
+    }
+
+    public void traiterCommande(String commandeLue) {
+        if(!isTimeOut){
+            gui.afficher( "> "+ commandeLue + "\n");
+            String[] parties = commandeLue.split(" ", 2);
+            String commande = parties[0].toUpperCase();
+            String parametre = parties.length > 1 ? parties[1].toUpperCase() : "";
+
+            switch (commande) {
+                case "ALLER":
+                    allerEn(parametre);
+                    break;
+                case "PARLER":
+                    parlerA(parametre);
+                    break;
+                case "PRENDRE":
+                    prendreObjet(parametre);
+                    break;
+                case "INVENTAIRE":
+                    afficherInventaire();
+                    break;
+                case "INSPECTER":
+                    inspecter(parametre);
+                    break;
+                case "OUVRIR":
+                    ouvrirConteneur(parametre);
+                    break;
+                case "UTILISER":
+                    utiliserObjet(parametre);
+                    break;
+                case "RETOUR":
+                    retourner();
+                    break;
+                case "TELEPORTER":
+                    teleporter();
+                    break;
+                case "QUITTER":
+                    terminer();
+                    break;
+                case "?":
+                case "AIDE":
+                    afficherAide();
+                    break;
+                case "CONNEXION":
+                    if (!actualPlayer.isLogged()){
+                        actualPlayer.setPseudo(parametre);
+                        actualGameState.setMember("playerPseudo",parametre);
+                        gui.afficher("Connecté en tant que : "+ parametre);
+                    }else{
+                        gui.afficher("Vous êtes déja connecté !");
+                    };
+                    break;
+                case "SAUVEGARDE":
+                    sauvegarderJeu();
+                    gui.afficher("Sauvegarde réussie !");
+                    break;
+                case "CHARGER":
+                    if(!actualPlayer.isLogged()){
+                        gui.afficher("Vous n'êtes pas connecté !");
+                    }else{
+                        // TODO : charger les éléments de sauvegarde
+                        HashMap<String, Object> loadSave = actualGameState.loadSave();
+                        compteur.setTimeBack(Integer.parseInt(loadSave.get("acutalTimeLeft").toString()));
+                        setZoneCourante((Zone) loadSave.get("zoneCourante"));
+                        afficherLocalisation();
+                        gui.afficheImage(zoneCourante.nomImage());
+                        historiqueZones = (Stack<Zone>) loadSave.get("historiqueZones");
+                        actualPlayer.setInventaireJoueur((Inventaire) loadSave.get("inventaireJoueur"));
+                        gui.afficher("Partie chargée !");
+                    }
+                    break;
+                default:
+                    gui.afficher("Commande inconnue");
+                    break;
+            }
+        } else {
+            gui.afficher("Le temps est écoulé ! Vous pouvez recommencer en relancant une partie !");
+            gui.afficher();
+        }
+    }
+
+    public void timeIsOut() {
+        gui.afficher("Le temps est écoulé ! Vous n'avez pas réussi à obtenir votre diplôme à temps...");
+        gui.afficher();
+        isTimeOut = true;
+    }
+
+    private static final Map<String, String> directionsMap = Map.of(
+    	    "N", "NORD",
+    	    "S", "SUD",
+    	    "E", "EST",
+    	    "O", "OUEST",
+    	    "H", "HAUT",
+    	    "B", "BAS"
+    	);
+
+
+    private void allerEn(String direction) {
+        direction = directionValideOuNull(direction);
+
+        if (direction == null) {
+            gui.afficher("Où voulez-vous aller ? Précisez une direction (N, S, E, O).");
+            return;
+        }
+
+        Zone nouvelleZone = zoneCourante.obtientSortie(direction);
+
+        if (nouvelleZone == null) {
+            gui.afficher("Il n'y a pas de sortie dans cette direction !");
+            return;
+        }
+
+        historiqueZones.push(zoneCourante);
+        zoneCourante = nouvelleZone;
+
+        afficherLocalisation();
+        gui.afficheImage(zoneCourante.nomImage());
+    }
+
+    private String directionValideOuNull(String direction) {
+        if (direction == null || direction.trim().isEmpty()) return null;
+        String directionClean = direction.trim().toUpperCase();
+        return directionsMap.getOrDefault(directionClean, directionClean);
+    }
+
+    private void parlerA(String personnage) {
+        String message = actualPlayer.parler(personnage, zoneCourante);
+        gui.afficher(message);
+        gui.afficheImage(zoneCourante.nomImage());
+    }
+
+    private void prendreObjet(String nomObjet) {
+        String message = actualPlayer.prendreObjet(nomObjet, zoneCourante);
+        gui.afficher(message);
+        gui.afficheImage(zoneCourante.nomImage());
+    }
     
+    private void afficherInventaire() {
+        String message = actualPlayer.afficherInventaire();
+        gui.afficher(message);
+    }
+
+    private void inspecter(String element) {
+        String message = actualPlayer.inspecter(element, zoneCourante);
+        gui.afficher(message);
+        gui.afficheImage(zoneCourante.nomImage());
+    }
+
+    private void ouvrirConteneur(String conteneur) {
+        String message = actualPlayer.ouvrir(conteneur, zoneCourante);
+        gui.afficher(message);
+        gui.afficheImage(zoneCourante.nomImage());
+    }
+
+    private void utiliserObjet(String objet) {
+        // TODO: Implémenter la logique d'utilisation d'objet
+    }
+
     private void creerCarte() {
         //Exterieur
         Zone zamZam = new Zone("Zam Zam", "ZamZamAvecKebab.png", "ZamZamSansKebab.png");
@@ -182,163 +349,17 @@ public class Jeu implements Serializable {
     }
 
     private void afficherLocalisation() {
-            gui.afficher( zoneCourante.descriptionLongue());
-            gui.afficher();
+        gui.afficher( zoneCourante.descriptionLongue());
+        gui.afficher();
     }
 
     private void afficherMessageDeBienvenue() {
-    	gui.afficher("Bienvenue !");
-    	gui.afficher();
+        gui.afficher("Bienvenue !");
+        gui.afficher();
         gui.afficher("Tapez '?' pour obtenir de l'aide.");
         gui.afficher();
         afficherLocalisation();
         gui.afficheImage(zoneCourante.nomImage());
-    }
-    
-    public void traiterCommande(String commandeLue) {
-    	gui.afficher( "> "+ commandeLue + "\n");
-        String[] parties = commandeLue.split(" ", 2);
-        String commande = parties[0].toUpperCase();
-        String parametre = parties.length > 1 ? parties[1].toUpperCase() : "";
-
-        switch (commande) {
-            case "ALLER":
-                allerEn(parametre);
-                break;
-            case "PARLER":
-                parlerA(parametre);
-                break;
-            case "PRENDRE":
-                prendreObjet(parametre);
-                break;
-            case "INVENTAIRE":
-                afficherInventaire();
-                break;
-            case "INSPECTER":
-                inspecter(parametre);
-                break;
-            case "OUVRIR":
-                ouvrirConteneur(parametre);
-                break;
-            case "UTILISER":
-                utiliserObjet(parametre);
-                break;
-            case "RETOUR":
-                retourner();
-                break;
-            case "TELEPORTER":
-                teleporter();
-                break;
-            case "QUITTER":
-                terminer();
-                break;
-            case "?":
-            case "AIDE":
-                afficherAide();
-                break;
-            case "CONNEXION":
-                if (!actualPlayer.isLogged()){
-                    actualPlayer.setPseudo(parametre);
-                    actualGameState.setMember("playerPseudo",parametre);
-                    gui.afficher("Connecté en tant que : "+ parametre);
-                }else{
-                    gui.afficher("Vous êtes déja connecté !");
-                };
-                break;
-            case "SAUVEGARDE":
-                sauvegarderJeu();
-                gui.afficher("Sauvegarde réussie !");
-                break;
-            case "CHARGER":
-                if(!actualPlayer.isLogged()){
-                    gui.afficher("Vous n'êtes pas connecté !");
-                }else{
-                    // TODO : charger les éléments de sauvegarde
-                    HashMap<String, Object> loadSave = actualGameState.loadSave();
-                    compteur.setTimeBack(Integer.parseInt(loadSave.get("acutalTimeLeft").toString()));
-                    setZoneCourante((Zone) loadSave.get("zoneCourante"));
-                    afficherLocalisation();
-                    gui.afficheImage(zoneCourante.nomImage());
-                    historiqueZones = (Stack<Zone>) loadSave.get("historiqueZones");
-                    actualPlayer.setInventaireJoueur((Inventaire) loadSave.get("inventaireJoueur"));
-                    gui.afficher("Partie chargée !");
-                }
-                break;
-            default:
-                gui.afficher("Commande inconnue");
-                break;
-        }
-    }
-
-    private static final Map<String, String> directionsMap = Map.of(
-    	    "N", "NORD",
-    	    "S", "SUD",
-    	    "E", "EST",
-    	    "O", "OUEST",
-    	    "H", "HAUT",
-    	    "B", "BAS"
-    	);
-
-
-    private void allerEn(String direction) {
-        direction = directionValideOuNull(direction);
-
-        if (direction == null) {
-            gui.afficher("Où voulez-vous aller ? Précisez une direction (N, S, E, O).");
-            return;
-        }
-
-        Zone nouvelleZone = zoneCourante.obtientSortie(direction);
-
-        if (nouvelleZone == null) {
-            gui.afficher("Il n'y a pas de sortie dans cette direction !");
-            return;
-        }
-
-        historiqueZones.push(zoneCourante);
-        zoneCourante = nouvelleZone;
-
-        afficherLocalisation();
-        gui.afficheImage(zoneCourante.nomImage());
-    }
-
-    private String directionValideOuNull(String direction) {
-        if (direction == null || direction.trim().isEmpty()) return null;
-        String directionClean = direction.trim().toUpperCase();
-        return directionsMap.getOrDefault(directionClean, directionClean);
-    }
-
-    private void parlerA(String personnage) {
-        String message = actualPlayer.parler(personnage, zoneCourante);
-        gui.afficher(message);
-        gui.afficheImage(zoneCourante.nomImage());
-    }
-
-    private void prendreObjet(String nomObjet) {
-        String message = actualPlayer.prendreObjet(nomObjet, zoneCourante);
-        gui.afficher(message);
-        gui.afficheImage(zoneCourante.nomImage());
-    }
-    
-    private void afficherInventaire() {
-        String message = actualPlayer.afficherInventaire();
-        gui.afficher(message);
-    }
-
-    private void inspecter(String element) {
-        String message = actualPlayer.inspecter(element, zoneCourante);
-        gui.afficher(message);
-        gui.afficheImage(zoneCourante.nomImage());
-    }
-
-    private void ouvrirConteneur(String conteneur) {
-        String message = actualPlayer.ouvrir(conteneur, zoneCourante);
-        gui.afficher(message);
-        gui.afficheImage(zoneCourante.nomImage());
-    }
-
-    private void utiliserObjet(String objet) {
-        // TODO: Implémenter la logique d'utilisation d'objet
     }
 
     private void retourner() {
@@ -384,20 +405,13 @@ public class Jeu implements Serializable {
     }
     
     private void terminer() {
-        sauvegarderJeu();
+        if(actualPlayer.isLogged()){
+            sauvegarderJeu();
+        }
         threadCompteur.interrupt();
     	gui.afficher( "Au revoir...");
     	gui.enable( false);
         System.exit(0);
-    }
-
-    public void sauvegarderJeu(){
-        actualGameState.setMember("playerPseudo",actualPlayer.getPseudo());
-        actualGameState.setMember("zoneCourante",zoneCourante);
-        actualGameState.setMember("inventaireJoueur",actualPlayer.getInventaireJoueur());
-        actualGameState.setMember("historiqueZones",historiqueZones);
-        actualGameState.setMember("acutalTimeLeft",compteur.getTimeLeft());
-        actualGameState.writeSave();
     }
 
     public JSObject getActualGameState(){

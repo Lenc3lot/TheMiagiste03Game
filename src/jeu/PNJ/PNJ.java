@@ -2,7 +2,9 @@ package jeu.PNJ;
 
 import jeu.Objet;
 
-abstract public class PNJ {
+import java.io.Serializable;
+
+abstract public class PNJ implements Serializable {
      String idPNJ;
      String nomPNJ;
      String[] texteInterraction;

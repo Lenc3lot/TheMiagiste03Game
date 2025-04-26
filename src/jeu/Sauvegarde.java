@@ -16,7 +16,7 @@ public class Sauvegarde extends JSObject implements Serializable{
     private Map<String, Object> savedMap;
     private String PATH_TO_SAVES = "./src/jeu/savedFiles/";
     @Serial
-    private  static  final  long serialVersionUID =  1350092881346723535L;
+    private  static  final  long serialVersionUID =  1483002994431364708L;
 
     public Sauvegarde(){
         savedMap = new HashMap<>();
@@ -32,9 +32,6 @@ public class Sauvegarde extends JSObject implements Serializable{
                 };
             }
             if (saveFile.createNewFile()) {
-//                FileWriter fileWriter = new FileWriter(PATH_TO_SAVES + fileName);
-//                fileWriter.write(savedMap.toString());
-//                fileWriter.close();
                 FileOutputStream fileOutputStream = new FileOutputStream(saveFile);
                 ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
                 objectOutputStream.writeObject(savedMap);
