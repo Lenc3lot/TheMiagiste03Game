@@ -1,6 +1,8 @@
 package jeu;
 
-public class Question {
+import java.io.Serializable;
+
+public class Question implements Serializable {
     private final int idQuestion;
     private final String textQuestion;
     private final String reponseQuestion;

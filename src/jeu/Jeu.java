@@ -45,6 +45,15 @@ public class Jeu implements Serializable {
     public static final Objet CAFE = new Objet("CAFE", "Café", false, true,
             "Un bon café pour se réveiller");
 
+    private static final Map<String, String> directionsMap = Map.of(
+            "N", "NORD",
+            "S", "SUD",
+            "E", "EST",
+            "O", "OUEST",
+            "H", "HAUT",
+            "B", "BAS"
+    );
+
     public Jeu() {
         creerCarte();
         gui = null;
@@ -151,16 +160,6 @@ public class Jeu implements Serializable {
         gui.afficher();
         isTimeOut = true;
     }
-
-    private static final Map<String, String> directionsMap = Map.of(
-    	    "N", "NORD",
-    	    "S", "SUD",
-    	    "E", "EST",
-    	    "O", "OUEST",
-    	    "H", "HAUT",
-    	    "B", "BAS"
-    	);
-
 
     private void allerEn(String direction) {
         direction = directionValideOuNull(direction);

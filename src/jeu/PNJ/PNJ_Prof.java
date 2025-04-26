@@ -24,10 +24,14 @@ public class PNJ_Prof extends PNJ{
             hasGivenQuiz = true;
             return "Bienvenue en " + matiere + " !\n" +
                    "Je vais vous poser quelques questions pour évaluer vos connaissances. \n"+
-                    "(Utilisez la commande REPONDRE [réponse] pour répondre !) ";
+                    "(Utilisez la commande REPONDRE [réponse] pour répondre !) \n";
         }
         return "Vous avez déjà passé le quiz de " + matiere + " !";
     }
+
+//    private Question selectRandomQuestion() {
+//
+//    }
 
     public boolean isAnswerTrue(String reponse) {
         for (Question question : listeQuestion) {

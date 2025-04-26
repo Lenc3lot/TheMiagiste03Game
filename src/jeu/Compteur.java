@@ -26,7 +26,7 @@ public  class Compteur implements Runnable {
     }
 
     public int getTimeLeft(){
-        return secondes;
+        return startingTime;
     }
 
     public void timeIsOut(){
@@ -38,7 +38,7 @@ public  class Compteur implements Runnable {
     }
 
     public void setTimeBack(int timeLeftLoaded){
-        this.secondes = timeLeftLoaded;
+        this.startingTime = timeLeftLoaded;
     }
 }
 

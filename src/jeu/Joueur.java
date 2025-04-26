@@ -24,9 +24,10 @@ public class Joueur  implements Serializable{
             return "Il n'y a personne ici à qui parler.";
         }
 
+        personnage = personnage.trim().toLowerCase();
         for (PNJ pnj : pnjs) {
             String[] pngId = pnj.getNomPNJ().split(" ",2);
-            if (pngId[0].equals(personnage)) {
+            if (pngId[0].toLowerCase().equals(personnage)) {
                 // Gestion des différents types de PNJ
                 if (pnj instanceof PNJ_Guide) {
                     PNJ_Guide guide = (PNJ_Guide) pnj;
