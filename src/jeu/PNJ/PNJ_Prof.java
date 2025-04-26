@@ -1,5 +1,6 @@
 package jeu.PNJ;
 
+import jeu.Objet;
 import jeu.Question;
 
 import java.util.ArrayList;
@@ -11,8 +12,8 @@ public class PNJ_Prof extends PNJ{
     private boolean hasGivenQuiz;
     private String matiere;
 
-    public PNJ_Prof(String unIdPNJ, String unNomPNJ, String[] tabInterractions, int visibleTime, String matiere) {
-        super(unIdPNJ, unNomPNJ, tabInterractions);
+    public PNJ_Prof(String unIdPNJ, String unNomPNJ, String[] tabInterractions, Objet objetADonner,int visibleTime, String matiere) {
+        super(unIdPNJ, unNomPNJ, tabInterractions,objetADonner);
         this.visibleTime = visibleTime;
         this.matiere = matiere;
         this.hasGivenQuiz = false;
@@ -22,7 +23,8 @@ public class PNJ_Prof extends PNJ{
         if (!hasGivenQuiz) {
             hasGivenQuiz = true;
             return "Bienvenue en " + matiere + " !\n" +
-                   "Je vais vous poser quelques questions pour évaluer vos connaissances.";
+                   "Je vais vous poser quelques questions pour évaluer vos connaissances. \n"+
+                    "(Utilisez la commande REPONDRE [réponse] pour répondre !) ";
         }
         return "Vous avez déjà passé le quiz de " + matiere + " !";
     }

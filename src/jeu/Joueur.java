@@ -25,7 +25,8 @@ public class Joueur  implements Serializable{
         }
 
         for (PNJ pnj : pnjs) {
-            if (pnj.getNomPNJ().equalsIgnoreCase(personnage)) {
+            String[] pngId = pnj.getNomPNJ().split(" ",2);
+            if (pngId[0].equals(personnage)) {
                 // Gestion des différents types de PNJ
                 if (pnj instanceof PNJ_Guide) {
                     PNJ_Guide guide = (PNJ_Guide) pnj;
@@ -111,7 +112,8 @@ public class Joueur  implements Serializable{
 
                 zone.changerImage("bureauBdeCoffreOuvert.png");
 
-                Objet mascotte = Objet.MASCOTTE;
+                Objet mascotte = new Objet("MASCOTTE", "Mascotte du BDE", true, true,
+                        "La mascotte officielle du BDE");;
                 inventaireJoueur.ajouterObjet(mascotte);
 
                 return "BRAVO ! Vous avez trouvé la mascotte du BDE !";
@@ -126,7 +128,8 @@ public class Joueur  implements Serializable{
 
             zone.changerImage("bureauBdeCoffreOuvert.png");
 
-            Objet mascotte = Objet.MASCOTTE;
+            Objet mascotte = new Objet("MASCOTTE", "Mascotte du BDE", true, true,
+                    "La mascotte officielle du BDE");;
             inventaireJoueur.ajouterObjet(mascotte);
 
             return "BRAVO ! Vous avez trouvé la mascotte du BDE !";

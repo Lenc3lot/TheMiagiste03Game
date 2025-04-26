@@ -23,6 +23,28 @@ public class Jeu implements Serializable {
     private Thread threadCompteur;
     private boolean isTimeOut = false;
 
+    // CREATION DES OBJETS
+    public static final Objet CERTIFICATION = new Objet("CERTIF", "Certification MIAGE", true, true,
+            "Votre certification MIAGE qui sert aussi de TODO list");
+    public static final Objet MAISON = new Objet("MAISON", "Maison de qualité", true, true,
+            "Une représentation de la maison de la qualité en management");
+    public static final Objet GUIDE_INTEGRATION = new Objet("GUIDE", "Guide d'intégration", true, true,
+            "Guide pour l'intégration en transformation numérique");
+    public static final Objet ARTICLE_BANGLADESH = new Objet("ARTICLE", "Article sur le Bangladesh", true, true,
+            "Article géopolitique sur le Bangladesh");
+    public static final Objet ON2 = new Objet("ON2", "O(n²)", true, true,
+            "Représentation de la complexité algorithmique");
+    public static final Objet SCRUM_BOOK = new Objet("SCRUM", "Scrum Book", true, true,
+            "Livre sur la méthodologie Scrum");
+    public static final Objet CLE_USB = new Objet("USB", "Clé USB Wooclap", true, true,
+            "Clé USB contenant les présentations Wooclap");
+    public static final Objet CHAT_GPT = new Objet("GPT", "Chat GPT", true, true,
+            "Assistant d'intelligence artificielle");
+    public static final Objet KEBAB = new Objet("KEBAB", "Kebab du ZAM ZAM", false, true,
+            "Un délicieux kebab du ZAM ZAM");
+    public static final Objet CAFE = new Objet("CAFE", "Café", false, true,
+            "Un bon café pour se réveiller");
+
     public Jeu() {
         creerCarte();
         gui = null;
@@ -212,12 +234,14 @@ public class Jeu implements Serializable {
         Zone couloirRdcOuest = new Zone("couloir RDC Ouest", "CouloirOuest.png");
         Zone bureauAdministration = new Zone("Bureau administration", "bureauAdAvecCertif.png", "bureauAdSansCertif.png");
         Zone salle001 = new Zone("Salle 0.01", "Salle001AvecMaison.png", "Salle001SansMaison.png");
+
         //Etage 1
         Zone hallEtage1 = new Zone("hall 1er étage", "hallEtage1.png");
         Zone couloirEtage1Est = new Zone("couloir 1er étage Est", "CouloirEst.png");
         Zone couloirEtage1Ouest = new Zone("couloir 1er étage Ouest", "CouloirOuest.png");
         Zone salleDePause = new Zone("Salle de pause", "salleDePauseAvecChatGpt.png", "salleDePauseSansChatGpt.png");
         Zone salle101 = new Zone("Salle 1.01", "Salle101AvecGuide.png", "Salle101SansGuide.png");
+
         //Etage 2
         Zone hallEtage2 = new Zone("hall 2ème étage", "hallEtage2.png");
         Zone couloirEtage2Est = new Zone("couloir 2ème étage Est", "CouloirEst.png");
@@ -231,16 +255,64 @@ public class Jeu implements Serializable {
         Zone bureauBde = new Zone("Bureau BDE", "bureauBdeCoffreFerme.png", "bureauBdeCoffreOuvert.png");
 
         // Ajout des PNJ
-        PNJ_Guide sin = new PNJ_Guide("SIN", "SIN", new String[]{"Bonjour !", "Comment puis-je vous aider ?"});
-        PNJ_Admin sandrine = new PNJ_Admin("SAND", "Sandrine", new String[]{"Bonjour !", "Je peux vous aider ?"});
-        PNJ_ZamZam chefZamZam = new PNJ_ZamZam("ZAM", "Chef du ZAM ZAM", new String[]{"Bienvenue au ZAM ZAM !", "Que puis-je vous servir ?"});
+        PNJ_Guide sin = new PNJ_Guide("SIN",
+                "SIN",
+                new String[]{"Bonjour !",
+                        "Comment puis-je vous aider ?"});
+
+        PNJ_Admin sandrine = new PNJ_Admin("SAND",
+                "Sandrine",
+                new String[]{"Bonjour !",
+                        "Je peux vous aider ?"});
+
+        PNJ_ZamZam chefZamZam = new PNJ_ZamZam("ZAM",
+                "Chef du ZAM ZAM",
+                new String[]{"Bienvenue au ZAM ZAM !",
+                        "Que puis-je vous servir ?"});
 
         // Ajout des professeurs avec leurs questions
-        PNJ_Prof profQualite = new PNJ_Prof("PROF_QUAL", "Professeur de Qualité", new String[]{"Bonjour !", "Prêt pour le cours ?"}, 60, "Management de la qualité");
-        PNJ_Prof profTransfo = new PNJ_Prof("PROF_TRANS", "Professeur de Transformation", new String[]{"Bonjour !", "Prêt pour le cours ?"}, 60, "Transformation numérique");
-        PNJ_Prof profAnglais = new PNJ_Prof("PROF_ANG", "Professeur d'anglais", new String[]{"Hello !", "Ready for class ?"}, 60, "Anglais");
-        PNJ_Prof profAlgo = new PNJ_Prof("PROF_ALGO", "Professeur d'algorithmique", new String[]{"Bonjour !", "Prêt pour le cours ?"}, 60, "Algorithmique");
-        PNJ_Prof profGestion = new PNJ_Prof("PROF_GEST", "Professeur de gestion", new String[]{"Bonjour !", "Prêt pour le cours ?"}, 60, "Gestion de projet");
+        PNJ_Prof profQualite = new PNJ_Prof("PROF_QUAL",
+                "1 -Professeur de Qualité",
+                new String[]{"Bonjour !", "Prêt pour le cours ?"},
+                MAISON,
+                60,
+                "Management de la qualité"
+                );
+
+        PNJ_Prof profTransfo = new PNJ_Prof("PROF_TRANS",
+                "1 -Professeur de Transformation",
+                new String[]{"Bonjour !", "Prêt pour le cours ?"},
+                GUIDE_INTEGRATION,
+                60,
+                "Transformation numérique");
+
+        PNJ_Prof profAnglais = new PNJ_Prof("PROF_ANG",
+                "1 -Professeur d'anglais",
+                new String[]{"Hello !", "Ready for class ?"},
+                ARTICLE_BANGLADESH,
+                60,
+                "Anglais");
+
+        PNJ_Prof profAlgo = new PNJ_Prof("PROF_ALGO",
+                "1 - Professeur d'algorithmique",
+                new String[]{"Bonjour !", "Prêt pour le cours ?"},
+                ON2,
+                60,
+                "Algorithmique");
+
+        PNJ_Prof profGestion = new PNJ_Prof("PROF_GEST",
+                "1 -Professeur de gestion",
+                new String[]{"Bonjour !", "Prêt pour le cours ?"},
+                SCRUM_BOOK,
+                60,
+                "Gestion de projet SCRUM");
+
+        PNJ_Prof profWooclip = new PNJ_Prof("PROF_GEST",
+                "2 -Ordinateur",
+                new String[]{"BIENVENUE DANS LE QUIZZ WOOCLOP, PREPAREZ VOUS POUR LE TEST"},
+                CLE_USB,
+                60,
+                "Gestion de projet");
 
         // Ajout des PNJ aux zones
         hallEntree.setPNJ(sin);
@@ -251,19 +323,24 @@ public class Jeu implements Serializable {
         salle201.setPNJ(profAnglais);
         salle204.setPNJ(profAlgo);
         salle218.setPNJ(profGestion);
+        salle218.setPNJ(profWooclip);
 
         // Ajout des objets dans les zones
-        hallEntree.ajouterObjet(Objet.CAFE);
-        bureauAdministration.ajouterObjet(Objet.CERTIFICATION);
-        salle001.ajouterObjet(Objet.MAISON);
-        salle101.ajouterObjet(Objet.GUIDE_INTEGRATION);
-        salle201.ajouterObjet(Objet.ARTICLE_BANGLADESH);
-        salle204.ajouterObjet(Objet.ON2);
-        salle218.ajouterObjet(Objet.SCRUM_BOOK);
-        salle218.ajouterObjet(Objet.CLE_USB);
-        salleDePause.ajouterObjet(Objet.CHAT_GPT);
-        zamZam.ajouterObjet(Objet.KEBAB);
-        // bureauBde.ajouterObjet(Objet.MASCOTTE); // La mascotte sera ajoutée uniquement quand on ouvre le coffre
+        hallEntree.ajouterObjet(CAFE);
+
+        bureauAdministration.ajouterObjet(CERTIFICATION);
+
+        // Objets clés
+//        salle001.ajouterObjet(MAISON);
+//        salle101.ajouterObjet(GUIDE_INTEGRATION);
+//        salle201.ajouterObjet(ARTICLE_BANGLADESH);
+//        salle204.ajouterObjet(ON2);
+//        salle218.ajouterObjet(SCRUM_BOOK);
+//        salle218.ajouterObjet(CLE_USB);
+
+        salleDePause.ajouterObjet(CHAT_GPT);
+        zamZam.ajouterObjet(KEBAB);
+        // bureauBde.ajouterObjet(MASCOTTE); // La mascotte sera ajoutée uniquement quand on ouvre le coffre
 
         //Parking
         parking.ajouteSortie(Sortie.NORD, zamZam);

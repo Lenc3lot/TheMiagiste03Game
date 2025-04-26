@@ -8,6 +8,7 @@ abstract public class PNJ implements Serializable {
      String idPNJ;
      String nomPNJ;
      String[] texteInterraction;
+     Objet objetADonner;
 
      public PNJ(String unIdPNJ,String unNomPNJ,String[] tabInterractions){
          this.idPNJ = unIdPNJ;
@@ -15,9 +16,16 @@ abstract public class PNJ implements Serializable {
          this.texteInterraction = tabInterractions;
      }
 
-     public String donnerObjet(Objet objet){
+     public PNJ(String unIdPNJ,String unNomPNJ,String[] tabInterractions,Objet objetADonner){
+         this.idPNJ = unIdPNJ;
+         this.nomPNJ = unNomPNJ;
+         this.texteInterraction = tabInterractions;
+         this.objetADonner = objetADonner;
+     }
+
+     public String donnerObjet(){
         // TODO : Donne un objet et affiche un message
-         return "Voici " + objet.getLabel();
+         return "Voici " + objetADonner.getLabel();
      }
 
      public String getNomPNJ() {
