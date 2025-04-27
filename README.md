@@ -34,7 +34,7 @@ src/
 
 1. Clonez le dépôt :
 ```bash
-git clone https://github.com/votre-username/TheMiagiste03Game.git
+git clone https://github.com/Lenc3lot/TheMiagiste03Game.git
 ```
 
 2. Compilez le projet :
