@@ -149,12 +149,19 @@ public class EmploiDuTemps extends Objet implements Serializable {
             sb.append(String.format("%-10s", info[1]));
             
             if (i < quizActuel) {
-                sb.append(" ✓");
+                sb.append(" VALIDE");
             }
             sb.append("\n");
         }
         
         sb.append("╚══════════════════════════════════════════╝\n");
+        
+        // Ajout du message pour aller voir Sandrine après le dernier quiz
+        if (quizActuel >= quizs.size()) {
+            sb.append("\nFélicitations ! Vous avez terminé tous vos quiz.\n");
+            sb.append("Allez voir SANDRINE pour passer l'examen final !\n");
+        }
+        
         return sb.toString();
     }
 } 

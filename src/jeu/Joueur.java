@@ -465,7 +465,7 @@ public class    Joueur  implements Serializable{
                 Objet objet = objets.get(0);
                 nomObjet = objet.getLabel();
             } else {
-                return "Que voulez-vous prendre ?";
+            return "Que voulez-vous prendre ?";
             }
         }
 
