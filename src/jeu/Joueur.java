@@ -44,6 +44,9 @@ public class    Joueur  implements Serializable{
     private boolean estEtudiant;
     private transient Jeu jeu;
 
+    /** Nombre de téléportations restantes pour le cours actuel. */
+    private int teleportationsRestantes = 2;
+
     /**
      * Constructeur du joueur.
      *
@@ -476,6 +479,47 @@ public class    Joueur  implements Serializable{
 
     public void setJeu(Jeu jeu) {
         this.jeu = jeu;
+    }
+
+    /**
+     * Retourne le nombre de téléportations restantes.
+     *
+     * @return Nombre de téléportations restantes.
+     */
+    public int getTeleportationsRestantes() {
+        return teleportationsRestantes;
+    }
+
+    /**
+     * Définit le nombre de téléportations restantes.
+     *
+     * @param teleportationsRestantes Nouveau nombre de téléportations restantes.
+     */
+    public void setTeleportationsRestantes(int teleportationsRestantes) {
+        this.teleportationsRestantes = teleportationsRestantes;
+    }
+
+    /**
+     * Tente de téléporter le joueur vers une zone.
+     *
+     * @param zone Zone de destination.
+     * @return Message indiquant le résultat de la téléportation.
+     */
+    public String teleporter(Zone zone) {
+        if (teleportationsRestantes > 0) {
+            teleportationsRestantes--;
+            return "Téléportation réussie vers " + zone.getNom() + " !\n" +
+                   "Il vous reste " + teleportationsRestantes + " téléportation(s).";
+        } else {
+            return "Vous n'avez plus de téléportations disponibles !";
+        }
+    }
+
+    /**
+     * Réinitialise le nombre de téléportations pour une nouvelle course.
+     */
+    public void reinitialiserTeleportations() {
+        teleportationsRestantes = 2;
     }
 }
 

@@ -22,6 +22,9 @@ import java.util.List;
  */
 public class Zone implements Serializable {
 
+    /** Liste statique de toutes les zones du jeu. */
+    private static final List<Zone> toutesLesZones = new ArrayList<>();
+
     /** Description textuelle de la zone. */
     private String description;
 
@@ -48,6 +51,7 @@ public class Zone implements Serializable {
      */
     public Zone(String description, String image) {
         this(description, image, null);
+        toutesLesZones.add(this);
     }
 
     /**
@@ -62,6 +66,7 @@ public class Zone implements Serializable {
         this.nomImage = image;
         this.nomImageSansObjet = imageSansObjet;
         sorties = new HashMap<>();
+        toutesLesZones.add(this);
     }
 
     /**
@@ -207,6 +212,39 @@ public class Zone implements Serializable {
      */
     public List<Objet> getObjets() {
         return objets;
+    }
+
+    /**
+     * Retourne la liste de toutes les zones du jeu.
+     *
+     * @return Liste de toutes les zones.
+     */
+    public static List<Zone> getAllZones() {
+        return new ArrayList<>(toutesLesZones);
+    }
+
+    /**
+     * Retourne une zone par son nom.
+     *
+     * @param nom Nom de la zone recherchée.
+     * @return La zone correspondante ou null si non trouvée.
+     */
+    public static Zone getZoneParNom(String nom) {
+        for (Zone zone : toutesLesZones) {
+            if (zone.getNom().equalsIgnoreCase(nom)) {
+                return zone;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Retourne le nom de la zone.
+     *
+     * @return Le nom de la zone.
+     */
+    public String getNom() {
+        return description;
     }
 }
 

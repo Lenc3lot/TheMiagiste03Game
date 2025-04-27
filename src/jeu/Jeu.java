@@ -7,7 +7,9 @@ import jeu.PNJ.PNJ_ZamZam;
 import netscape.javascript.JSObject;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -157,6 +159,7 @@ public class Jeu implements Serializable {
         actualGameState.setMember("historiqueZones",historiqueZones);
         actualGameState.setMember("acutalTimeLeft",compteur.getTimeLeft());
         actualGameState.setMember("player",actualPlayer);
+        actualGameState.setMember("teleportationsRestantes", actualPlayer.getTeleportationsRestantes());
         actualGameState.writeSave();
     }
 
@@ -203,7 +206,33 @@ public class Jeu implements Serializable {
                         retourner();
                         break;
                     case "TELEPORTER":
-                        teleporter();
+                        if (parametre.isEmpty()) {
+                            teleporter();
+                        } else {
+                            try {
+                                int numeroZone = Integer.parseInt(parametre);
+                                List<Zone> zonesUniques = new ArrayList<>();
+                                for (Zone zone : Zone.getAllZones()) {
+                                    if (!zonesUniques.contains(zone)) {
+                                        zonesUniques.add(zone);
+                                    }
+                                }
+                                if (numeroZone > 0 && numeroZone <= zonesUniques.size()) {
+                                    Zone zoneDestination = zonesUniques.get(numeroZone - 1);
+                                    String resultat = actualPlayer.teleporter(zoneDestination);
+                                    if (resultat.startsWith("Téléportation réussie")) {
+                                        zoneCourante = zoneDestination;
+                                        afficherLocalisation();
+                                        gui.afficheImage(zoneCourante.nomImage());
+                                    }
+                                    gui.afficher(resultat);
+                                } else {
+                                    gui.afficher("Numéro de zone invalide.");
+                                }
+                            } catch (NumberFormatException e) {
+                                gui.afficher("Veuillez entrer un numéro de zone valide.");
+                            }
+                        }
                         break;
                     case "QUITTER":
                         terminer();
@@ -235,8 +264,8 @@ public class Jeu implements Serializable {
                             afficherLocalisation();
                             gui.afficheImage(zoneCourante.nomImage());
                             historiqueZones = (Stack<Zone>) loadSave.get("historiqueZones");
-                            //actualPlayer.setInventaireJoueur((Inventaire) loadSave.get("inventaireJoueur"));
                             actualPlayer = (Joueur) loadSave.get("player");
+                            actualPlayer.setTeleportationsRestantes((Integer) loadSave.get("teleportationsRestantes"));
                             gui.afficher("Partie chargée !");
                         }
                         break;
@@ -845,9 +874,21 @@ public class Jeu implements Serializable {
      * Permet de téléporter le joueur.
      */
     private void teleporter() {
-        // TODO: Implémenter la logique de téléportation
-        // Afficher la liste des zones disponibles
-        // Permettre au joueur de choisir une zone
+        // Afficher la liste de toutes les zones sans doublons
+        StringBuilder message = new StringBuilder("Zones disponibles :\n");
+        List<String> zonesAffichees = new ArrayList<>();
+        int numero = 1;
+        for (Zone zone : Zone.getAllZones()) {
+            String nomZone = zone.getNom();
+            if (!zonesAffichees.contains(nomZone)) {
+                zonesAffichees.add(nomZone);
+                message.append(numero).append(". ").append(nomZone).append("\n");
+                numero++;
+            }
+        }
+        message.append("\nPour vous téléporter, entrez : TELEPORTER [numéro de la zone]\n");
+        message.append("Exemple : TELEPORTER 1");
+        gui.afficher(message.toString());
     }
 
     /**
