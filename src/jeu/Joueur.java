@@ -463,11 +463,10 @@ public class    Joueur  implements Serializable{
             List<Objet> objets = zone.getObjets();
             if (objets.size() == 1) {
                 Objet objet = objets.get(0);
-                zone.retirerObjet(objet.getLabel());
-                inventaireJoueur.ajouterObjet(objet);
-                return "Vous avez pris : " + objet.getLabel();
+                nomObjet = objet.getLabel();
+            } else {
+                return "Que voulez-vous prendre ?";
             }
-            return "Que voulez-vous prendre ?";
         }
 
         Objet objet = zone.retirerObjet(nomObjet);

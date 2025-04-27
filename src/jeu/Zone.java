@@ -192,9 +192,13 @@ public class Zone implements Serializable {
      * @return L'objet retiré, ou null si non trouvé.
      */
     public Objet retirerObjet(String nomObjet) {
+        if (nomObjet == null) return null;
+        
+        String nomObjetUpper = nomObjet.toUpperCase();
         for (int i = 0; i < objets.size(); i++) {
             Objet obj = objets.get(i);
-            if (obj.getLabel().toUpperCase().equals(nomObjet)) {
+            if (obj.getLabel().toUpperCase().equals(nomObjetUpper) || 
+                (obj.getIdObjet() != null && obj.getIdObjet().toUpperCase().equals(nomObjetUpper))) {
                 objets.remove(i);
                 if (obj.isKeyObject() && nomImageSansObjet != null) {
                     changerImage(nomImageSansObjet);
