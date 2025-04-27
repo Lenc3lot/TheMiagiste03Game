@@ -51,6 +51,9 @@ public class Jeu implements Serializable {
     /** Indique si le temps est écoulé. */
     private boolean isTimeOut = false;
 
+    /** Indique si le joueur a gagné. */
+    private boolean isVictory = false;
+
     // CREATION DES OBJETS
     /**
      * Objet clé : Certification MIAGE, indispensable pour valider la fin du jeu.
@@ -132,6 +135,7 @@ public class Jeu implements Serializable {
         historiqueZones = new Stack<>();
         actualPlayer = new Joueur("newJoueur");
         actualGameState = new Sauvegarde();
+        
     }
 
     /**
@@ -162,7 +166,7 @@ public class Jeu implements Serializable {
      * @param commandeLue Commande tapée par le joueur.
      */
     public void traiterCommande(String commandeLue) {
-        if(!isTimeOut){
+        if(!isTimeOut && !isVictory){
             gui.afficher( "> "+ commandeLue + "\n");
             String[] parties = commandeLue.split(" ", 2);
             String commande = parties[0].toUpperCase();
@@ -340,6 +344,8 @@ public class Jeu implements Serializable {
                 actualPlayer.getInventaireJoueur().ajouterObjet(diplome);
                 actualPlayer.setTalkingTo(null);
                 gui.afficheImage("victoire.png");
+                isVictory = true;
+                gui.enable(false);
             }else{
                 gui.afficher("Vous êtes sûr d'avoir été en MIAGE ?... \n" +
                         "Je vous laisse réfléchir un peu de temps avant de me répondre à nouveau... \n" +
