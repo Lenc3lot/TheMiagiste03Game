@@ -15,12 +15,12 @@ public class PNJ_Admin extends PNJ {
         this.hasGivenSchedule = false;
         this.emploiDuTemps = new Objet("EDT", "Emploi du temps MIAGE", true, true);
         this.listeQuizs = new ArrayList<>();
-        // Ajout des IDs des quizs disponibles (les vrais quizs des profs)
-        listeQuizs.add(1); // Quiz 1
-        listeQuizs.add(2); // Quiz 2
-        listeQuizs.add(3); // Quiz 3
-        listeQuizs.add(4); // Quiz 4
-        listeQuizs.add(5); // Quiz 5
+        listeQuizs.add(1); 
+        listeQuizs.add(2); 
+        listeQuizs.add(3); 
+        listeQuizs.add(4); 
+        listeQuizs.add(5); 
+        listeQuizs.add(6); 
     }
 
     public boolean isAllKeyItemsCollected(){
