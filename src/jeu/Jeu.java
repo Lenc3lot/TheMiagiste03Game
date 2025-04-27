@@ -102,7 +102,7 @@ public class Jeu implements Serializable {
     /**
      * Objet bonus : Chat GPT, un assistant pour aider pendant les quiz.
      */
-    public static final Objet CHAT_GPT = new Objet("GPT", "Chat GPT", true, true,
+    public static final Objet CHAT_GPT = new Objet("GPT", "Chat GPT", false, true,
             "Assistant d'intelligence artificielle");
 
     /**
