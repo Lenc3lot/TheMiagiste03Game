@@ -200,7 +200,7 @@ public class Zone implements Serializable {
             if (obj.getLabel().toUpperCase().equals(nomObjetUpper) || 
                 (obj.getIdObjet() != null && obj.getIdObjet().toUpperCase().equals(nomObjetUpper))) {
                 objets.remove(i);
-                if (obj.isKeyObject() && nomImageSansObjet != null) {
+                if (nomImageSansObjet != null) {
                     changerImage(nomImageSansObjet);
                 }
                 return obj;
