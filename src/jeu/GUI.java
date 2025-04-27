@@ -4,34 +4,81 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.URL;
 
+/**
+ * Classe représentant l'interface graphique textuelle du jeu.
+ * Elle permet d'afficher les textes du jeu, les images associées aux zones,
+ * et de saisir les commandes utilisateur.
+ *
+ * Elle gère aussi l'affichage d'un compteur de temps.
+ *
+ * @author Amine Amar
+ * @author Amine Foufa
+ * @author Baptiste Noto
+ * @version 1.0
+ */
+
 public class GUI implements ActionListener
 {
+    /** Référence vers l'instance du jeu. */
     private Jeu jeu;
+
+    /** Fenêtre principale de l'application. */
     private JFrame fenetre;
+
+    /** Champ de saisie pour entrer les commandes. */
     private JTextField entree;
+
+    /** Zone de texte principale affichant les messages du jeu. */
     private JTextArea texte;
+
+    /** Zone de texte dédiée à l'affichage du compteur. */
     private JTextArea zoneCompteur;
+
+    /** Label pour afficher les images liées aux zones. */
     private JLabel image;
 
+    /**
+     * Constructeur de l'interface graphique.
+     *
+     * @param j Instance du jeu associée à cette interface.
+     */
     public GUI(Jeu j) {
         jeu = j;
         creerGUI();
     }
 
+    /**
+     * Affiche la valeur actuelle du compteur.
+     *
+     * @param cpt Chaîne de caractères représentant le temps actuel.
+     */
     public void afficherCompteur (String cpt){
         zoneCompteur.setText(cpt);
         zoneCompteur.setCaretPosition(zoneCompteur.getDocument().getLength());
     }
 
+    /**
+     * Affiche un texte dans la zone principale.
+     *
+     * @param s Texte à afficher.
+     */
     public void afficher(String s) {
         texte.append(s);
         texte.setCaretPosition(texte.getDocument().getLength());
     }
-    
+
+    /**
+     * Ajoute une ligne vide dans la zone principale.
+     */
     public void afficher() {
         afficher("\n");
     }
 
+    /**
+     * Affiche une image en fonction du nom fourni.
+     *
+     * @param nomImage Nom du fichier image à afficher.
+     */
    public void afficheImage( String nomImage) {
 	   	URL imageURL = this.getClass().getClassLoader().getResource("jeu/images/" + nomImage);
 	   	if( imageURL != null ) {
@@ -40,12 +87,20 @@ public class GUI implements ActionListener
         }
    }
 
+    /**
+     * Active ou désactive la saisie utilisateur.
+     *
+     * @param ok true pour activer la saisie, false pour la désactiver.
+     */
     public void enable(boolean ok) {
         entree.setEditable(ok);
         if ( ! ok )
             entree.getCaret().setBlinkRate(0);
     }
 
+    /**
+     * Crée et configure tous les éléments de l'interface graphique.
+     */
     private void creerGUI() {
         fenetre = new JFrame("Jeu");
         
@@ -113,10 +168,18 @@ public class GUI implements ActionListener
         entree.requestFocus();
     }
 
+    /**
+     * Action déclenchée lorsqu'une commande est entrée par l'utilisateur.
+     *
+     * @param e Événement d'action lié à la saisie de texte.
+     */
     public void actionPerformed(ActionEvent e) {
         executerCommande();
     }
 
+    /**
+     * Lit la commande entrée par l'utilisateur et la transmet au jeu pour traitement.
+     */
     private void executerCommande() {
         String commandeLue = entree.getText();
         entree.setText("");

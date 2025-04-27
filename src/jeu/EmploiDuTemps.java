@@ -8,11 +8,34 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Random;
 
+/**
+ * Classe représentant l'emploi du temps du joueur dans le jeu.
+ * L'emploi du temps guide le joueur à travers les différents quiz à accomplir pour progresser.
+ *
+ * L'objet EmploiDuTemps doit être validé avant de pouvoir effectuer les quiz.
+ * Chaque quiz correspond à une matière et une salle spécifique.
+ *
+ * @author Amine Amar
+ * @author Amine Foufa
+ * @author Baptiste Noto
+ * @version 1.0
+ */
+
 public class EmploiDuTemps extends Objet implements Serializable {
-    private final List<Integer> quizs; 
-    private int quizActuel; 
-    private boolean estValide; 
+
+    /** Liste des identifiants des quiz à accomplir. */
+    private final List<Integer> quizs;
+
+    /** Indice du quiz actuel dans la liste. */
+    private int quizActuel;
+
+    /** Indique si l'emploi du temps est valide (prêt à être utilisé). */
+    private boolean estValide;
+
+    /** Informations associées aux quiz : matière et salle. */
     private static final Map<Integer, String[]> QUIZ_INFO = new HashMap<>();
+
+    // Initialisation statique des matières et des salles
     static {
         QUIZ_INFO.put(1, new String[]{"Transformation numérique", "Salle 1.01"});
         QUIZ_INFO.put(2, new String[]{"Gestion de la qualité", "Salle 0.01"});
@@ -21,7 +44,13 @@ public class EmploiDuTemps extends Objet implements Serializable {
         QUIZ_INFO.put(5, new String[]{"Gestion de projet SCRUM", "Salle 2.18"});
         QUIZ_INFO.put(6, new String[]{"Utilisation de Wooclap", "Salle 2.18"});
     }
-    
+
+    /**
+     * Constructeur de l'emploi du temps.
+     * Mélange les quizs.
+     *
+     * @param listeQuizs Liste initiale des identifiants des quiz.
+     */
     public EmploiDuTemps(List<Integer> listeQuizs) {
         super("EDT", "Emploi du temps MIAGE", true, true, "Votre emploi du temps de la MIAGE");
         this.quizs = new ArrayList<>(listeQuizs);
@@ -34,33 +63,65 @@ public class EmploiDuTemps extends Objet implements Serializable {
         this.quizActuel = 0;
         this.estValide = false;
     }
-    
+
+    /**
+     * Vérifie si le joueur peut effectuer un quiz donné.
+     *
+     * @param idQuiz Identifiant du quiz.
+     * @return true si l'emploi du temps est valide et que c'est le bon quiz à faire, false sinon.
+     */
     public boolean peutFaireQuiz(int idQuiz) {
         return estValide && quizActuel < quizs.size() && quizs.get(quizActuel) == idQuiz;
     }
-    
+
+    /**
+     * Passe au quiz suivant dans l'emploi du temps.
+     */
     public void passerAuQuizSuivant() {
         if (quizActuel < quizs.size() - 1) {
             quizActuel++;
         }
     }
-    
+
+    /**
+     * Valide l'emploi du temps, le rendant utilisable.
+     */
     public void validerEmploiDuTemps() {
         this.estValide = true;
     }
-    
+
+    /**
+     * Vérifie si l'emploi du temps est valide.
+     *
+     * @return true si l'emploi du temps est validé, false sinon.
+     */
     public boolean estValide() {
         return estValide;
     }
-    
+
+    /**
+     * Obtient l'identifiant du quiz actuel.
+     *
+     * @return Identifiant du quiz actuel.
+     */
     public int getQuizActuel() {
         return quizs.get(quizActuel);
     }
-    
+
+    /**
+     * Vérifie si le joueur est sur le dernier quiz de l'emploi du temps.
+     *
+     * @return true si c'est le dernier quiz, false sinon.
+     */
     public boolean estDernierQuiz() {
         return quizActuel == quizs.size() - 1;
     }
-    
+
+    /**
+     * Retourne une représentation textuelle de l'emploi du temps.
+     *
+     * @return Chaîne représentant l'emploi du temps avec les quiz et salles.
+     */
     @Override
     public String toString() {
         if (!estValide) {

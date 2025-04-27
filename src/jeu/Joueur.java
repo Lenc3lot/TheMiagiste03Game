@@ -1,17 +1,57 @@
 package jeu;
 
-import java.io.Serializable;
 import jeu.PNJ.*;
-import java.util.List;
-public class    Joueur  implements Serializable{
-    private String pseudo;
-    private Inventaire inventaireJoueur;
-    private boolean isLogged;
-    private PNJ_Prof talkingTo;
-    private boolean aRencontreSin;
-    private boolean aRencontreSandrine;
-    private boolean estEtudiant;
 
+import java.io.Serializable;
+
+import java.io.Serializable;
+import java.util.List;
+
+/**
+ * Classe représentant le joueur dans le jeu d'aventure.
+ *
+ * Le joueur possède un pseudo, un inventaire, un état de connexion, ainsi que diverses informations
+ * sur sa progression (rencontre avec SIN, Sandrine, obtention du statut d'étudiant, etc.).
+ *
+ * Il peut interagir avec les PNJ, récupérer des objets, utiliser des objets et suivre son emploi du temps.
+ *
+ * Cette classe est sérialisable pour permettre la sauvegarde de la progression du joueur.
+ *
+ * @author Amine Amar
+ * @author Amine Foufa
+ * @author Baptiste Noto
+ * @version 1.0
+ */
+
+public class    Joueur  implements Serializable{
+
+    /** Pseudo du joueur. */
+    private String pseudo;
+
+    /** Inventaire du joueur. */
+    private Inventaire inventaireJoueur;
+
+    /** Indique si le joueur est connecté. */
+    private boolean isLogged;
+
+    /** Prof actuellement en interaction avec le joueur (pour répondre aux quiz). */
+    private PNJ_Prof talkingTo;
+
+    /** Indique si le joueur a rencontré SIN. */
+    private boolean aRencontreSin;
+
+    /** Indique si le joueur a rencontré Sandrine. */
+    private boolean aRencontreSandrine;
+
+    /** Indique si le joueur a officiellement le statut d'étudiant MIAGE. */
+    private boolean estEtudiant;
+    private transient Jeu jeu;
+
+    /**
+     * Constructeur du joueur.
+     *
+     * @param unPseudo Pseudo choisi par le joueur.
+     */
     public Joueur(String unPseudo) {
         this.pseudo = unPseudo;
         this.inventaireJoueur = new Inventaire();
@@ -21,13 +61,20 @@ public class    Joueur  implements Serializable{
         this.estEtudiant = false;
     }
 
+    /**
+     * Permet au joueur de parler à un PNJ présent dans la zone.
+     *
+     * @param personnage Nom du personnage avec lequel interagir.
+     * @param zone Zone actuelle où se trouve le joueur.
+     * @return Réponse ou interaction générée par le PNJ.
+     */
     public String parler(String personnage, Zone zone, Compteur compteur) {
         if (personnage == null || personnage.trim().isEmpty()) {
             List<PNJ> pnjs = zone.getPNJs();
             if (pnjs.isEmpty()) {
                 return UIHelper.box("Il n'y a personne ici à qui parler.");
             }
-            
+
             StringBuilder message = new StringBuilder("Personnes présentes :\n");
             int index = 1;
             for (PNJ pnj : pnjs) {
@@ -44,7 +91,7 @@ public class    Joueur  implements Serializable{
         }
 
         personnage = personnage.trim().toLowerCase();
-        
+
         // Vérifier si l'utilisateur a entré un numéro
         try {
             int numero = Integer.parseInt(personnage);
@@ -141,6 +188,11 @@ public class    Joueur  implements Serializable{
         return UIHelper.box("La personne que vous cherchez n'est pas ici.");
     }
 
+    /**
+     * Récupère l'emploi du temps du joueur.
+     *
+     * @return EmploiDuTemps si présent, sinon null.
+     */
     public EmploiDuTemps getEmploiDuTemps() {
         List<Objet> objets = inventaireJoueur.getObjets();
         for (Objet obj : objets) {
@@ -151,6 +203,13 @@ public class    Joueur  implements Serializable{
         return null;
     }
 
+    /**
+     * Permet au joueur d'inspecter une zone ou ses éléments.
+     *
+     * @param element Élément spécifique à inspecter.
+     * @param zone Zone actuelle.
+     * @return Résultat de l'inspection.
+     */
     public String inspecter(String element, Zone zone) {
         // Si pas de paramètre, on inspecte la zone par défaut
         if (element == null || element.trim().isEmpty()) {
@@ -183,6 +242,13 @@ public class    Joueur  implements Serializable{
         return "Il n'y a rien à examiner ici.";
     }
 
+    /**
+     * Permet d'ouvrir un conteneur dans la zone.
+     *
+     * @param conteneur Nom du conteneur à ouvrir.
+     * @param zone Zone actuelle.
+     * @return Résultat de l'ouverture.
+     */
     public String ouvrir(String conteneur, Zone zone) {
         // Si pas de paramètre et qu'on est dans le bureau BDE, on ouvre le coffre par défaut
         if (conteneur == null || conteneur.trim().isEmpty()) {
@@ -219,6 +285,12 @@ public class    Joueur  implements Serializable{
         return "Il n'y a pas de '" + conteneur + "' à ouvrir ici.";
     }
 
+    /**
+     * Permet d'utiliser un objet de l'inventaire.
+     *
+     * @param objet Nom de l'objet à utiliser.
+     * @return Résultat de l'utilisation.
+     */
     public String utiliser(String objet, Compteur compteur) {
         if (objet == null || objet.trim().isEmpty()) {
             return "Quel objet voulez-vous utiliser ? Consultez votre inventaire pour voir les objets disponibles.";
@@ -229,7 +301,7 @@ public class    Joueur  implements Serializable{
         Objet objetTrouve = null;
 
         for (Objet obj : objets) {
-            if (obj.getLabel().toUpperCase().equals(objet) || 
+            if (obj.getLabel().toUpperCase().equals(objet) ||
                 (obj.getIdObjet() != null && obj.getIdObjet().toUpperCase().equals(objet))) {
                 objetTrouve = obj;
                 break;
@@ -270,6 +342,11 @@ public class    Joueur  implements Serializable{
         return "Vous ne pouvez pas utiliser cet objet pour le moment.";
     }
 
+    /**
+     * Définit le pseudo du joueur s'il n'est pas déjà connecté.
+     *
+     * @param pseudo Nouveau pseudo.
+     */
     public void setPseudo(String pseudo) {
         if (!isLogged){
             this.pseudo = pseudo;
@@ -277,30 +354,67 @@ public class    Joueur  implements Serializable{
         }
     }
 
+    /**
+     * Récupère le pseudo du joueur.
+     *
+     * @return Pseudo du joueur.
+     */
     public String getPseudo(){
         return this.pseudo;
     }
 
+    /**
+     * Vérifie si le joueur est connecté.
+     *
+     * @return true si connecté, sinon false.
+     */
     public boolean isLogged() {
         return isLogged;
     }
 
+    /**
+     * Retourne le professeur actuellement en interaction pour un quiz.
+     *
+     * @return PNJ_Prof en cours.
+     */
     public PNJ_Prof getTalkingTo() {
         return talkingTo;
     }
 
+    /**
+     * Définit le professeur actuellement en interaction.
+     *
+     * @param pnjProf PNJ_Prof à définir.
+     */
     public void setTalkingTo(PNJ_Prof pnjProf){
         this.talkingTo = pnjProf;
     }
 
+    /**
+     * Récupère l'inventaire du joueur.
+     *
+     * @return Inventaire du joueur.
+     */
     public Inventaire getInventaireJoueur() {
         return inventaireJoueur;
     }
 
+    /**
+     * Définit un nouvel inventaire pour le joueur.
+     *
+     * @param inventaireJoueur Inventaire à assigner.
+     */
     public void setInventaireJoueur(Inventaire inventaireJoueur) {
         this.inventaireJoueur = inventaireJoueur;
     }
 
+    /**
+     * Permet de prendre un objet présent dans la zone.
+     *
+     * @param nomObjet Nom de l'objet à prendre.
+     * @param zone Zone actuelle.
+     * @return Message de confirmation ou d'erreur.
+     */
     public String prendreObjet(String nomObjet, Zone zone) {
         // Si pas de paramètre et qu'il n'y a qu'un seul objet, on le prend par défaut
         if (nomObjet == null || nomObjet.trim().isEmpty()) {
@@ -324,6 +438,11 @@ public class    Joueur  implements Serializable{
         return "Vous avez pris : " + objet.getLabel();
     }
 
+    /**
+     * Affiche le contenu de l'inventaire du joueur.
+     *
+     * @return Chaîne représentant les objets de l'inventaire.
+     */
     public String afficherInventaire() {
         List<Objet> objets = inventaireJoueur.getObjets();
         StringBuilder sb = new StringBuilder();
@@ -346,6 +465,9 @@ public class    Joueur  implements Serializable{
         return sb.toString();
     }
 
+    public void setJeu(Jeu jeu) {
+        this.jeu = jeu;
+    }
 }
 
 

@@ -1,50 +1,118 @@
 package jeu;
 
 import jeu.PNJ.PNJ_Admin;
+import jeu.PNJ.PNJ_Guide;
 import jeu.PNJ.PNJ_Prof;
 import jeu.PNJ.PNJ_ZamZam;
-import jeu.PNJ.PNJ_Guide;
 import netscape.javascript.JSObject;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+/**
+ * Classe principale gérant l'ensemble du jeu d'aventure "The Miagiste 03".
+ *
+ * Cette classe contrôle la navigation entre les zones, les interactions avec les PNJ,
+ * la gestion de l'inventaire, la logique du temps (via le compteur) et les mécanismes de sauvegarde/chargement.
+ *
+ * Elle orchestre aussi la logique du déroulement du scénario et des quiz pour obtenir les objets clés.
+ *
+ * @author Amine Amar
+ * @author Amine Foufa
+ * @author Baptiste Noto
+ * @version 1.0
+ */
+
 public class Jeu implements Serializable {
-	
-    private GUI gui; 
+
+    /** Interface graphique du jeu. */
+    private GUI gui;
+
+    /** Zone actuelle où se trouve le joueur. */
 	private Zone zoneCourante;
+
+    /** État actuel de la partie pour sauvegarde/chargement. */
     private Sauvegarde actualGameState;
+
+    /** Joueur actuel. */
     private Joueur actualPlayer;
+
+    /** Historique des zones traversées (pour la commande RETOUR). */
     private Stack<Zone> historiqueZones;
+
+    /** Compteur de temps du jeu. */
     private Compteur compteur;
+
+    /** Thread gérant le compteur. */
     private Thread threadCompteur;
+
+    /** Indique si le temps est écoulé. */
     private boolean isTimeOut = false;
 
     // CREATION DES OBJETS
+    /**
+     * Objet clé : Certification MIAGE, indispensable pour valider la fin du jeu.
+     */
     public static final Objet CERTIFICATION = new Objet("CERTIF", "Certification MIAGE", true, true,
             "Votre certification MIAGE qui sert aussi de TODO list");
+
+    /**
+     * Objet clé : Maison de qualité, récupérée pendant le cours de qualité.
+     */
     public static final Objet MAISON = new Objet("MAISON", "Maison de qualité", true, true,
             "Une représentation de la maison de la qualité en management");
+
+    /**
+     * Objet clé : Guide d'intégration, récupéré pendant le cours de transformation numérique.
+     */
     public static final Objet GUIDE_INTEGRATION = new Objet("GUIDE", "Guide d'intégration", true, true,
             "Guide pour l'intégration en transformation numérique");
+
+    /**
+     * Objet clé : Article sur le Bangladesh, récupéré pendant le cours d'anglais.
+     */
     public static final Objet ARTICLE_BANGLADESH = new Objet("ARTICLE", "Article sur le Bangladesh", true, true,
             "Article géopolitique sur le Bangladesh");
+
+    /**
+     * Objet clé : Complexité algorithmique O(n²), récupéré pendant le cours d'algorithmique.
+     */
     public static final Objet ON2 = new Objet("ON2", "O(n²)", true, true,
             "Représentation de la complexité algorithmique");
+
+    /**
+     * Objet clé : Livre Scrum, récupéré pendant le cours de gestion de projet SCRUM.
+     */
     public static final Objet SCRUM_BOOK = new Objet("SCRUM", "Scrum Book", true, true,
             "Livre sur la méthodologie Scrum");
+
+    /**
+     * Objet clé : Clé USB contenant des supports Wooclap.
+     */
     public static final Objet CLE_USB = new Objet("USB", "Clé USB Wooclap", true, true,
             "Clé USB contenant les présentations Wooclap");
+
+    /**
+     * Objet bonus : Chat GPT, un assistant pour aider pendant les quiz.
+     */
     public static final Objet CHAT_GPT = new Objet("GPT", "Chat GPT", true, true,
             "Assistant d'intelligence artificielle");
+
+    /**
+     * Objet bonus : Kebab du ZAM ZAM, permet de modifier le temps dans la partie.
+     */
     public static final Objet KEBAB = new Objet("KEBAB", "Kebab du ZAM ZAM", false, true,
             "Un délicieux kebab du ZAM ZAM");
+
+    /**
+     * Objet bonus : Café pour gagner en énergie.
+     */
     public static final Objet CAFE = new Objet("CAFE", "Café", false, true,
             "Un bon café pour se réveiller");
 
+    /** Dictionnaire de correspondance des directions abrégées vers les directions complètes. */
     private static final Map<String, String> directionsMap = Map.of(
             "N", "NORD",
             "S", "SUD",
@@ -54,6 +122,10 @@ public class Jeu implements Serializable {
             "B", "BAS"
     );
 
+    /**
+     * Constructeur du jeu.
+     * Initialise la carte et les composants principaux.
+     */
     public Jeu() {
         creerCarte();
         gui = null;
@@ -62,10 +134,18 @@ public class Jeu implements Serializable {
         actualGameState = new Sauvegarde();
     }
 
+    /**
+     * Associe l'interface graphique au jeu.
+     *
+     * @param g Instance de l'interface graphique.
+     */
     public void setGUI( GUI g) {
         gui = g; afficherMessageDeBienvenue();
     }
 
+    /**
+     * Sauvegarde l'état actuel de la partie.
+     */
     public void sauvegarderJeu(){
         actualGameState.setMember("playerPseudo",actualPlayer.getPseudo());
         actualGameState.setMember("zoneCourante",zoneCourante);
@@ -75,6 +155,11 @@ public class Jeu implements Serializable {
         actualGameState.writeSave();
     }
 
+    /**
+     * Traite la commande saisie par le joueur.
+     *
+     * @param commandeLue Commande tapée par le joueur.
+     */
     public void traiterCommande(String commandeLue) {
         if(!isTimeOut){
             gui.afficher( "> "+ commandeLue + "\n");
@@ -158,12 +243,20 @@ public class Jeu implements Serializable {
         }
     }
 
+    /**
+     * Indique que le temps est écoulé et termine la partie.
+     */
     public void timeIsOut() {
         gui.afficher("Le temps est écoulé ! Vous n'avez pas réussi à obtenir votre diplôme à temps...");
         gui.afficher();
         isTimeOut = true;
     }
 
+    /**
+     * Permet d'aller dans une direction donnée.
+     *
+     * @param direction Direction souhaitée.
+     */
     private void allerEn(String direction) {
         direction = directionValideOuNull(direction);
 
@@ -186,18 +279,34 @@ public class Jeu implements Serializable {
         gui.afficheImage(zoneCourante.nomImage());
     }
 
+    /**
+     * Convertit une direction abrégée en direction complète ou retourne null si invalide.
+     *
+     * @param direction Direction saisie.
+     * @return Direction complète ou null.
+     */
     private String directionValideOuNull(String direction) {
         if (direction == null || direction.trim().isEmpty()) return null;
         String directionClean = direction.trim().toUpperCase();
         return directionsMap.getOrDefault(directionClean, directionClean);
     }
 
+    /**
+     * Permet de parler à un PNJ présent dans la zone.
+     *
+     * @param personnage Nom du personnage.
+     */
     private void parlerA(String personnage) {
         String message = actualPlayer.parler(personnage, zoneCourante, compteur);
         gui.afficher(message);
         gui.afficheImage(zoneCourante.nomImage());
     }
 
+    /**
+     * Vérifie la réponse du joueur lors d'un quiz.
+     *
+     * @param reponse Réponse donnée par le joueur.
+     */
     private void checkReponse(String reponse){
         PNJ_Prof talkingTo = actualPlayer.getTalkingTo();
         if(talkingTo.isAnswerTrue(reponse)){
@@ -216,34 +325,60 @@ public class Jeu implements Serializable {
         }
     }
 
+    /**
+     * Permet au joueur de prendre un objet dans la zone.
+     *
+     * @param nomObjet Nom de l'objet.
+     */
     private void prendreObjet(String nomObjet) {
         String message = actualPlayer.prendreObjet(nomObjet, zoneCourante);
         gui.afficher(message);
         gui.afficheImage(zoneCourante.nomImage());
     }
-    
+
+    /**
+     * Affiche l'inventaire du joueur.
+     */
     private void afficherInventaire() {
         String message = actualPlayer.afficherInventaire();
         gui.afficher(message);
     }
 
+    /**
+     * Permet d'inspecter un élément ou la zone actuelle.
+     *
+     * @param element Élément à inspecter.
+     */
     private void inspecter(String element) {
         String message = actualPlayer.inspecter(element, zoneCourante);
         gui.afficher(message);
         gui.afficheImage(zoneCourante.nomImage());
     }
 
+    /**
+     * Permet d'ouvrir un conteneur.
+     *
+     * @param conteneur Nom du conteneur.
+     */
     private void ouvrirConteneur(String conteneur) {
         String message = actualPlayer.ouvrir(conteneur, zoneCourante);
         gui.afficher(message);
         gui.afficheImage(zoneCourante.nomImage());
     }
 
+    /**
+     * Permet d'utiliser un objet de l'inventaire.
+     *
+     * @param objet Nom de l'objet.
+     */
     private void utiliserObjet(String objet) {
         String message = actualPlayer.utiliser(objet, compteur);
         gui.afficher(message);
     }
 
+    /**
+     * Crée toute la carte du jeu, les zones et leurs connexions.
+     */
     private void creerCarte() {
         //Exterieur
         Zone zamZam = new Zone("Zam Zam", "ZamZamAvecKebab.png", "ZamZamSansKebab.png");
@@ -400,7 +535,11 @@ public class Jeu implements Serializable {
         zoneCourante = hallEntree;
     }
 
-    // GENERATE ALL PROF
+    /**
+     * Crée et configure le professeur de Transformation Numérique.
+     *
+     * @return PNJ_Prof représentant le professeur de Transformation.
+     */
     private PNJ_Prof getPnjProfTransfo() {
         PNJ_Prof profTransfo = new PNJ_Prof("PROF_TRANSFO",
                 "1 -Professeur de Transformation",
@@ -434,6 +573,12 @@ public class Jeu implements Serializable {
         profTransfo.ajouterQuestion(question3Transfo);
         return profTransfo;
     }
+
+    /**
+     * Crée et configure le professeur de Gestion de la Qualité.
+     *
+     * @return PNJ_Prof représentant le professeur de Qualité.
+     */
     private PNJ_Prof getPnjProfQualite(){
         PNJ_Prof profQualite = new PNJ_Prof("PROF_QUAL",
                 "1 -Professeur de Qualité",
@@ -468,6 +613,12 @@ public class Jeu implements Serializable {
         profQualite.ajouterQuestion(question3Qualite);
         return profQualite;
     }
+
+    /**
+     * Crée et configure le professeur d'Anglais.
+     *
+     * @return PNJ_Prof représentant le professeur d'Anglais.
+     */
     private PNJ_Prof getPnjProfAnglais(){
         PNJ_Prof profAnglais = new PNJ_Prof("PROF_ANG",
                 "1 -Professeur d'Anglais",
@@ -502,6 +653,12 @@ public class Jeu implements Serializable {
         profAnglais.ajouterQuestion(question3);
         return profAnglais;
     }
+
+    /**
+     * Crée et configure le professeur d'Algorithmique.
+     *
+     * @return PNJ_Prof représentant le professeur d'Algorithmique.
+     */
     private PNJ_Prof getPnjProfAlgo(){
 
         PNJ_Prof profAlgo = new PNJ_Prof("PROF_ALGO",
@@ -528,7 +685,7 @@ public class Jeu implements Serializable {
         Question question3 = new Question(3,
                 "Un algorithme c'est ? \n" +
                         "A- Une description d'une suite d'étapes permettant d'obtenir un résultat à partir d'éléments fournis en entrée.  \n" +
-                        "B- Du truc magique qui fait pleins de choses \n" +
+                        "B- Un truc magique qui fait pleins de choses \n" +
                         "C- Bonne question \n",
                 "A");
 
@@ -537,6 +694,12 @@ public class Jeu implements Serializable {
         profAlgo.ajouterQuestion(question3);
         return profAlgo;
     }
+
+    /**
+     * Crée et configure le professeur de Gestion de Projet (SCRUM).
+     *
+     * @return PNJ_Prof représentant le professeur de Gestion.
+     */
     private PNJ_Prof getPnjProfGestion(){
 
         PNJ_Prof profGestion = new PNJ_Prof("PROF_GEST",
@@ -572,6 +735,12 @@ public class Jeu implements Serializable {
         profGestion.ajouterQuestion(question3);
         return profGestion;
     }
+
+    /**
+     * Crée et configure le professeur responsable du quiz Wooclap.
+     *
+     * @return PNJ_Prof représentant le professeur responsable du quiz Wooclap.
+     */
     private PNJ_Prof getPnjProfWooclip(){
         PNJ_Prof profWooclip = new PNJ_Prof("WOOCLIP",
                 "2 -Ordinateur",
@@ -607,11 +776,17 @@ public class Jeu implements Serializable {
         return profWooclip;
     }
 
+    /**
+     * Affiche la localisation actuelle du joueur.
+     */
     private void afficherLocalisation() {
         gui.afficher( zoneCourante.descriptionLongue());
         gui.afficher();
     }
 
+    /**
+     * Affiche un message de bienvenue au démarrage du jeu.
+     */
     private void afficherMessageDeBienvenue() {
         gui.afficher(UIHelper.line());
         gui.afficher(UIHelper.center("BIENVENUE À MIAGE !"));
@@ -623,6 +798,9 @@ public class Jeu implements Serializable {
         gui.afficheImage(zoneCourante.nomImage());
     }
 
+    /**
+     * Permet de revenir à la zone précédente.
+     */
     private void retourner() {
         if (!historiqueZones.isEmpty()) {
             zoneCourante = historiqueZones.pop();
@@ -633,12 +811,18 @@ public class Jeu implements Serializable {
         }
     }
 
+    /**
+     * Permet de téléporter le joueur.
+     */
     private void teleporter() {
         // TODO: Implémenter la logique de téléportation
         // Afficher la liste des zones disponibles
         // Permettre au joueur de choisir une zone
     }
 
+    /**
+     * Affiche l'aide pour les commandes du jeu.
+     */
     private void afficherAide() {
         gui.afficher("\n+---------------- GUIDE DU JEU MIAGE ----------------+\n");
         gui.afficher("Déplacements :\n" +
@@ -661,7 +845,10 @@ public class Jeu implements Serializable {
         gui.afficher("\nTapez '?' à tout moment pour revoir ce menu");
         gui.afficher("+---------------------------------------------------+\n");
     }
-    
+
+    /**
+     * Termine proprement le jeu et ferme l'application.
+     */
     private void terminer() {
         if(actualPlayer.isLogged()){
             sauvegarderJeu();
@@ -672,19 +859,40 @@ public class Jeu implements Serializable {
         System.exit(0);
     }
 
+    /**
+     * Retourne l'état actuel de la sauvegarde.
+     *
+     * @return JSObject représentant la sauvegarde.
+     */
     public JSObject getActualGameState(){
         return this.actualGameState;
     }
 
+    /**
+     * Définit la zone courante.
+     *
+     * @param zoneCourante Nouvelle zone actuelle.
+     */
     public void setZoneCourante(Zone zoneCourante){
         this.zoneCourante = zoneCourante;
     }
 
+    /**
+     * Définit le compteur du jeu ainsi que son thread associé.
+     *
+     * @param actualCompteur Compteur à utiliser.
+     * @param threadCompteur Thread du compteur.
+     */
     public void setCompteur(Compteur actualCompteur, Thread threadCompteur){
         this.compteur = actualCompteur;
         this.threadCompteur = threadCompteur;
     }
 
+    /**
+     * Retourne l'instance du compteur.
+     *
+     * @return Compteur du jeu.
+     */
     public Compteur getCompteur() {
         return compteur;
     }
