@@ -52,7 +52,7 @@ public class EmploiDuTemps extends Objet implements Serializable {
      * @param listeQuizs Liste initiale des identifiants des quiz.
      */
     public EmploiDuTemps(List<Integer> listeQuizs) {
-        super("EDT", "Emploi du temps MIAGE", true, true, "Votre emploi du temps de la MIAGE");
+        super("EDT", "Emploi du temps MIAGE", false, true, "Votre emploi du temps de la MIAGE");
         this.quizs = new ArrayList<>(listeQuizs);
         if (!quizs.isEmpty()) {
             int premierQuiz = quizs.get(0);

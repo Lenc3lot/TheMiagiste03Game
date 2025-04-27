@@ -106,5 +106,8 @@ public class Objet implements Serializable {
         return isUsable;
     }
 
+    public String getIdObjet(){
+        return this.idObjet;
+    }
 
 }

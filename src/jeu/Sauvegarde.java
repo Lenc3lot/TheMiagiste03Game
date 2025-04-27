@@ -28,7 +28,7 @@ public class Sauvegarde extends JSObject implements Serializable{
 
     /** ID de version pour la sérialisation. */
     @Serial
-    private  static  final  long serialVersionUID =  1483002994431364708L;
+    private  static  final  long serialVersionUID =  2117891925669012349L;
 
     /**
      * Constructeur par défaut de la sauvegarde.

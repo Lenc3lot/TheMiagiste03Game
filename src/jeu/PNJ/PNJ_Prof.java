@@ -74,7 +74,6 @@ public class PNJ_Prof extends PNJ{
             this.reponseQuestion = question.getReponseQuestion();
             return "Bienvenue en " + matiere + " !\n" +
                    "Je vais vous poser quelques questions pour évaluer vos connaissances. \n"+
-                    "(Utilisez la commande REPONDRE [réponse] pour répondre !) \n"+
                     question.getTextQuestion();
         }
         return "Vous avez déjà passé le quiz de " + matiere + " !";

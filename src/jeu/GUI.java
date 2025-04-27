@@ -138,7 +138,7 @@ public class GUI implements ActionListener
         JScrollPane listScroller = new JScrollPane(texte);
         JScrollPane textScroller = new JScrollPane(zoneCompteur);
 
-        listScroller.setPreferredSize(new Dimension(600, 400));
+        listScroller.setPreferredSize(new Dimension(600, 200));
         listScroller.setMinimumSize(new Dimension(300, 200));
         listScroller.setBorder(BorderFactory.createEmptyBorder());
 
@@ -158,7 +158,7 @@ public class GUI implements ActionListener
 
         fenetre.getContentPane().add(panel, BorderLayout.CENTER);
         fenetre.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        fenetre.setMinimumSize(new Dimension(800, 600));
+        fenetre.setMinimumSize(new Dimension(-00, 600));
         fenetre.setLocationRelativeTo(null);
 
         entree.addActionListener(this);

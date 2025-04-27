@@ -1,6 +1,10 @@
 package jeu.PNJ;
 
+import jeu.Compteur;
+import jeu.Inventaire;
 import jeu.Objet;
+import jeu.Question;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +37,7 @@ public class PNJ_Admin extends PNJ {
 
     /** Liste des identifiants des quiz à accomplir. */
     private final List<Integer> listeQuizs;
+    private Question questionFinale;
 
     /**
      * Constructeur du PNJ administratif.
@@ -59,8 +64,18 @@ public class PNJ_Admin extends PNJ {
      *
      * @return true si tous les objets ont été collectés, false sinon.
      */
-    public boolean isAllKeyItemsCollected() {
-        // TODO : Implémenter la vérification réelle
+    public boolean isAllKeyItemsCollected(Inventaire inventaireJoueur, Compteur compteur) {
+        // TODO : Verifie si le nombre d'item clés ont étés collectés avant l'heure max
+        if (compteur.getTimeLeft() < 1080) {
+            List<Objet> objetList = inventaireJoueur.getObjets();
+            int cptKeyObj = 0;
+            for (Objet objet : objetList) {
+                if (objet.isKeyObject()) {
+                    cptKeyObj++;
+                }
+            }
+            return cptKeyObj == 6;
+        }
         return false;
     }
 
@@ -72,35 +87,41 @@ public class PNJ_Admin extends PNJ {
     public String donnerEmploiDuTemps() {
         if (!hasGivenSchedule) {
             hasGivenSchedule = true;
-            return "Félicitations ! Voici votre emploi du temps pour l'année.\n" +
+            return "Félicitations ! Voici votre emploi du temps.\n" +
                     "Vous devez suivre tous vos cours et passer les examens.\n" +
-                    "N'oubliez pas de vous rendre dans les salles indiquées.";
+                    "N'oubliez pas de vous rendre dans les salles indiquées." +
+                    "Attention l'examen final doit être passé avant 18h en revenant me voir !";
         }
         return "Vous avez déjà votre emploi du temps !";
     }
 
     /**
-     * Retourne l'objet emploi du temps.
-     *
-     * @return Objet représentant l'emploi du temps.
-     */
-    public Objet getEmploiDuTemps() {
-        return emploiDuTemps;
-    }
-
-    /**
-     * Retourne la liste des identifiants des quiz que le joueur doit suivre.
-     *
-     * @return Copie de la liste des identifiants de quiz.
-     */
+    * Retourne la liste des identifiants des quiz que le joueur doit suivre.
+    *
+    * @return Copie de la liste des identifiants de quiz.
+    */
     public List<Integer> getListeQuizs() {
         return new ArrayList<>(listeQuizs); // Retourne une copie pour éviter les modifications externes
     }
 
     /**
-     * Démarre l'examen final.
-     */
-    public void startExamFinal() {
-        // TODO : Implémenter la logique de l'examen final
+    * Retourne la liste des identifiants des quiz que le joueur doit suivre.
+    *
+    * @return Copie de la liste des identifiants de quiz.
+    */
+    public String startExamFinal() {
+        questionFinale = new Question(1,
+                "Bravo tu as réussi à passer tout tes examens ! \n" +
+                        "Mais avant d'être diplomé, il faut que tu répondes à une dernière question.\n" +
+                        "La MIAGE c'est ...?\n" +
+                        "A -Le Fromage\n" +
+                        "B -Cool\n" +
+                        "C -Le partage\n",
+                "C");
+        return questionFinale.getTextQuestion();
+    }
+
+    public Question getQuestionFinale(){
+        return questionFinale;
     }
 }

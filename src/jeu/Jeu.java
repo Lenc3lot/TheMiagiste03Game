@@ -152,6 +152,7 @@ public class Jeu implements Serializable {
         actualGameState.setMember("inventaireJoueur",actualPlayer.getInventaireJoueur());
         actualGameState.setMember("historiqueZones",historiqueZones);
         actualGameState.setMember("acutalTimeLeft",compteur.getTimeLeft());
+        actualGameState.setMember("player",actualPlayer);
         actualGameState.writeSave();
     }
 
@@ -169,6 +170,8 @@ public class Jeu implements Serializable {
 
             if(actualPlayer.getTalkingTo() != null){
                 checkReponse(commande);
+            } else if (actualPlayer.getIsFinaleExamStarted()){
+
             } else {
                 switch (commande) {
                     case "ALLER":
@@ -228,7 +231,8 @@ public class Jeu implements Serializable {
                             afficherLocalisation();
                             gui.afficheImage(zoneCourante.nomImage());
                             historiqueZones = (Stack<Zone>) loadSave.get("historiqueZones");
-                            actualPlayer.setInventaireJoueur((Inventaire) loadSave.get("inventaireJoueur"));
+                            //actualPlayer.setInventaireJoueur((Inventaire) loadSave.get("inventaireJoueur"));
+                            actualPlayer = (Joueur) loadSave.get("player");
                             gui.afficher("Partie chargée !");
                         }
                         break;
@@ -308,20 +312,38 @@ public class Jeu implements Serializable {
      * @param reponse Réponse donnée par le joueur.
      */
     private void checkReponse(String reponse){
-        PNJ_Prof talkingTo = actualPlayer.getTalkingTo();
-        if(talkingTo.isAnswerTrue(reponse)){
-            gui.afficher("Bravo pour cet examen ! \n" +
-                    "[Tu as obtenu : "+talkingTo.giveItem().getLabel() +"]");
-            gui.afficher();
-            actualPlayer.getInventaireJoueur().ajouterObjet(talkingTo.giveItem());
-            actualPlayer.setTalkingTo(null);
-            actualPlayer.getEmploiDuTemps().passerAuQuizSuivant();
-        }else{
-            compteur.setTimeBack(compteur.getTimeLeft() + 30);
-            gui.afficher("MAUVAISE REPONSE ! Je repose ma question :  \n"+
-                    talkingTo.getQuestionPosee().getTextQuestion()
-            );
-            gui.afficher();
+        if(actualPlayer.getTalkingTo() instanceof PNJ_Prof talkingTo){
+            if(talkingTo.isAnswerTrue(reponse)){
+                gui.afficher("Bravo pour cet examen ! \n" +
+                        "[Tu as obtenu : "+talkingTo.giveItem().getLabel() +"]");
+                gui.afficher();
+                actualPlayer.getInventaireJoueur().ajouterObjet(talkingTo.giveItem());
+                actualPlayer.setTalkingTo(null);
+                actualPlayer.getEmploiDuTemps().passerAuQuizSuivant();
+                zoneCourante.changerImage(zoneCourante.nomImage().replace("Avec", "Sans"));
+                gui.afficheImage(zoneCourante.nomImage());
+            }else{
+                compteur.setTimeBack(compteur.getTimeLeft() + 30);
+                gui.afficher("MAUVAISE REPONSE ! Je repose ma question :  \n"+
+                        talkingTo.getQuestionPosee().getTextQuestion()
+                );
+                gui.afficher();
+            }
+        }else if(actualPlayer.getTalkingTo() instanceof PNJ_Admin talkingTo){
+            if(talkingTo.getQuestionFinale().getReponseQuestion().equals(reponse)){
+                gui.afficher("Félicitation ! Vous avez réussi vous avez obtenu votre dîplôme ! \n" +
+                        "Bravo ! \n" +
+                        "\n" +
+                        "[FELICITATION ! VOUS OBTENEZ LE DIPLOME MIAGE]");
+                Objet diplome = new Objet("DIPLOME","Diplome Miagiste",false,true,"Un magnifique diplomé décerné par la MIAGE à "+actualPlayer.getPseudo());
+                actualPlayer.getInventaireJoueur().ajouterObjet(diplome);
+                actualPlayer.setTalkingTo(null);
+            }else{
+                gui.afficher("Vous êtes sûr d'avoir été en MIAGE ?... \n" +
+                        "Je vous laisse réfléchir un peu de temps avant de me répondre à nouveau... \n" +
+                        "[PENALITE DE 30S]");
+                compteur.setTimeBack(getCompteur().getTimeLeft()+30);
+            }
         }
     }
 
