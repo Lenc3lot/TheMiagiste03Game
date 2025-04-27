@@ -11,7 +11,6 @@ public class    Joueur  implements Serializable{
     private boolean aRencontreSin;
     private boolean aRencontreSandrine;
     private boolean estEtudiant;
-    private transient Jeu jeu;
 
     public Joueur(String unPseudo) {
         this.pseudo = unPseudo;
@@ -22,7 +21,7 @@ public class    Joueur  implements Serializable{
         this.estEtudiant = false;
     }
 
-    public String parler(String personnage, Zone zone) {
+    public String parler(String personnage, Zone zone, Compteur compteur) {
         if (personnage == null || personnage.trim().isEmpty()) {
             List<PNJ> pnjs = zone.getPNJs();
             if (pnjs.isEmpty()) {
@@ -97,8 +96,8 @@ public class    Joueur  implements Serializable{
                 } else if (pnj instanceof PNJ_ZamZam) {
                     int minutes = 0;
                     int heures = 0;
-                    if (jeu != null && jeu.getCompteur() != null) {
-                        int time = jeu.getCompteur().getTimeLeft();
+                    if (compteur != null) {
+                        int time = compteur.getTimeLeft();
                         heures = ((time % 86400) % 3600) / 60;
                         minutes = ((time % 86400) % 3600) % 60;
                     }
@@ -220,7 +219,7 @@ public class    Joueur  implements Serializable{
         return "Il n'y a pas de '" + conteneur + "' à ouvrir ici.";
     }
 
-    public String utiliser(String objet) {
+    public String utiliser(String objet, Compteur compteur) {
         if (objet == null || objet.trim().isEmpty()) {
             return "Quel objet voulez-vous utiliser ?";
         }
@@ -238,13 +237,13 @@ public class    Joueur  implements Serializable{
                     java.util.Random rand = new java.util.Random();
                     boolean bon = rand.nextBoolean();
                     inventaireJoueur.retirerObjet(obj); // On retire le sandwich après usage
-                    if (jeu != null && jeu.getCompteur() != null) {
-                        int time = jeu.getCompteur().getTimeLeft();
+                    if (compteur != null) {
+                        int time = compteur.getTimeLeft();
                         if (bon) {
-                            jeu.getCompteur().setTimeBack(Math.max(0, time - 30));
+                            compteur.setTimeBack(Math.max(0, time - 30));
                             return "Miam ! Ce sandwich est délicieux, tu te sens plein d'énergie ! (Gain de 30 minutes)";
                         } else {
-                            jeu.getCompteur().setTimeBack(time + 30);
+                            compteur.setTimeBack(time + 30);
                             return "Beurk... Le sandwich était avarié ! Tu perds du temps à être malade... (Perte de 30 minutes)";
                         }
                     } else {
@@ -330,9 +329,6 @@ public class    Joueur  implements Serializable{
         return sb.toString();
     }
 
-    public void setJeu(Jeu jeu) {
-        this.jeu = jeu;
-    }
 }
 
 

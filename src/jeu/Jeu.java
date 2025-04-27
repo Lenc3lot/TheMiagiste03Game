@@ -59,7 +59,6 @@ public class Jeu implements Serializable {
         gui = null;
         historiqueZones = new Stack<>();
         actualPlayer = new Joueur("newJoueur");
-        actualPlayer.setJeu(this);
         actualGameState = new Sauvegarde();
     }
 
@@ -194,7 +193,7 @@ public class Jeu implements Serializable {
     }
 
     private void parlerA(String personnage) {
-        String message = actualPlayer.parler(personnage, zoneCourante);
+        String message = actualPlayer.parler(personnage, zoneCourante, compteur);
         gui.afficher(message);
         gui.afficheImage(zoneCourante.nomImage());
     }
@@ -241,7 +240,7 @@ public class Jeu implements Serializable {
     }
 
     private void utiliserObjet(String objet) {
-        String message = actualPlayer.utiliser(objet);
+        String message = actualPlayer.utiliser(objet, compteur);
         gui.afficher(message);
     }
 
