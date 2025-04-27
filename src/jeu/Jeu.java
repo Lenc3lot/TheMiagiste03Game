@@ -59,6 +59,7 @@ public class Jeu implements Serializable {
         gui = null;
         historiqueZones = new Stack<>();
         actualPlayer = new Joueur("newJoueur");
+        actualPlayer.setJeu(this);
         actualGameState = new Sauvegarde();
     }
 
@@ -681,5 +682,9 @@ public class Jeu implements Serializable {
     public void setCompteur(Compteur actualCompteur, Thread threadCompteur){
         this.compteur = actualCompteur;
         this.threadCompteur = threadCompteur;
+    }
+
+    public Compteur getCompteur() {
+        return compteur;
     }
 }

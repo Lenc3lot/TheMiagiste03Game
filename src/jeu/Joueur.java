@@ -3,7 +3,7 @@ package jeu;
 import java.io.Serializable;
 import jeu.PNJ.*;
 import java.util.List;
-public class Joueur  implements Serializable{
+public class    Joueur  implements Serializable{
     private String pseudo;
     private Inventaire inventaireJoueur;
     private boolean isLogged;
@@ -11,6 +11,7 @@ public class Joueur  implements Serializable{
     private boolean aRencontreSin;
     private boolean aRencontreSandrine;
     private boolean estEtudiant;
+    private transient Jeu jeu;
 
     public Joueur(String unPseudo) {
         this.pseudo = unPseudo;
@@ -69,6 +70,16 @@ public class Joueur  implements Serializable{
                     }
                     return admin.donnerEmploiDuTemps();
                 } else if (pnj instanceof PNJ_ZamZam) {
+                    int minutes = 0;
+                    int heures = 0;
+                    if (jeu != null && jeu.getCompteur() != null) {
+                        int time = jeu.getCompteur().getTimeLeft();
+                        heures = ((time % 86400) % 3600) / 60;
+                        minutes = ((time % 86400) % 3600) % 60;
+                    }
+                    if (heures < 11 || heures >= 12) {
+                        return "Le chef du ZAM ZAM n'est disponible que de 11h à 12h ! (Heure actuelle : " + heures + "h" + String.format("%02d", minutes) + ")";
+                    }
                     PNJ_ZamZam zamZam = (PNJ_ZamZam) pnj;
                     String message = zamZam.donnerSandwich();
                     Objet sandwich = zamZam.getSandwich();
@@ -274,6 +285,10 @@ public class Joueur  implements Serializable{
         sb.append("==================\n");
 
         return sb.toString();
+    }
+
+    public void setJeu(Jeu jeu) {
+        this.jeu = jeu;
     }
 }
 
