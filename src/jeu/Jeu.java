@@ -253,6 +253,7 @@ public class Jeu implements Serializable {
     public void timeIsOut() {
         gui.afficher("Le temps est écoulé ! Vous n'avez pas réussi à obtenir votre diplôme à temps...");
         gui.afficher();
+        gui.afficheImage("defaite.jpg");
         isTimeOut = true;
     }
 
@@ -338,6 +339,7 @@ public class Jeu implements Serializable {
                 Objet diplome = new Objet("DIPLOME","Diplome Miagiste",false,true,"Un magnifique diplomé décerné par la MIAGE à "+actualPlayer.getPseudo());
                 actualPlayer.getInventaireJoueur().ajouterObjet(diplome);
                 actualPlayer.setTalkingTo(null);
+                gui.afficheImage("victoire.png");
             }else{
                 gui.afficher("Vous êtes sûr d'avoir été en MIAGE ?... \n" +
                         "Je vous laisse réfléchir un peu de temps avant de me répondre à nouveau... \n" +
