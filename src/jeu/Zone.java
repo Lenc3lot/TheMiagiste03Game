@@ -56,16 +56,28 @@ public class Zone implements Serializable {
 
     public String descriptionLongue()  {
         StringBuilder sb = new StringBuilder();
-        sb.append("Vous êtes dans ").append(description).append("\n");
-        sb.append("Sorties : ").append(sorties()).append("\n");
+        sb.append(UIHelper.line());
+        sb.append(UIHelper.center("ZONE ACTUELLE"));
+        sb.append(UIHelper.line());
+        sb.append(UIHelper.left("Vous êtes dans : " + description));
+        sb.append(UIHelper.left("Sorties disponibles : " + sorties()));
+        sb.append(UIHelper.line());
 
         if (!pnjs.isEmpty()) {
-            sb.append("Personnes présentes :\n");
+            sb.append("\n");
+            sb.append(UIHelper.line());
+            sb.append(UIHelper.center("PERSONNES PRÉSENTES"));
+            sb.append(UIHelper.line());
+            int index = 1;
             for (PNJ pnj : pnjs) {
-                sb.append("- ").append(pnj.getNomPNJ()).append("\n");
+                sb.append(UIHelper.left(index + ". " + pnj.getNomPNJ()));
+                index++;
             }
+            sb.append(UIHelper.line());
+            sb.append(UIHelper.left("Pour parler à quelqu'un, utilisez PARLER"));
+            sb.append(UIHelper.left("suivi de son numéro ou de son nom."));
+            sb.append(UIHelper.line());
         }
-
         return sb.toString();
     }
 

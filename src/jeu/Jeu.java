@@ -614,10 +614,12 @@ public class Jeu implements Serializable {
     }
 
     private void afficherMessageDeBienvenue() {
-        gui.afficher("Bienvenue !");
-        gui.afficher();
-        gui.afficher("Tapez '?' pour obtenir de l'aide.");
-        gui.afficher();
+        gui.afficher(UIHelper.line());
+        gui.afficher(UIHelper.center("BIENVENUE À MIAGE !"));
+        gui.afficher(UIHelper.line());
+        gui.afficher(UIHelper.left("Tapez '?' pour obtenir de l'aide."));
+        gui.afficher(UIHelper.line());
+        gui.afficher("");
         afficherLocalisation();
         gui.afficheImage(zoneCourante.nomImage());
     }

@@ -24,20 +24,45 @@ public class    Joueur  implements Serializable{
 
     public String parler(String personnage, Zone zone) {
         if (personnage == null || personnage.trim().isEmpty()) {
-            return "A qui voulez-vous parler ?";
+            List<PNJ> pnjs = zone.getPNJs();
+            if (pnjs.isEmpty()) {
+                return UIHelper.box("Il n'y a personne ici à qui parler.");
+            }
+            
+            StringBuilder message = new StringBuilder("Personnes présentes :\n");
+            int index = 1;
+            for (PNJ pnj : pnjs) {
+                message.append(index).append(". ").append(pnj.getNomPNJ()).append("\n");
+                index++;
+            }
+            message.append("\nPour parler à quelqu'un, utilisez PARLER suivi de son numéro ou de son nom.");
+            return UIHelper.box(message.toString());
         }
 
         List<PNJ> pnjs = zone.getPNJs();
         if (pnjs.isEmpty()) {
-            return "Il n'y a personne ici à qui parler.";
+            return UIHelper.box("Il n'y a personne ici à qui parler.");
         }
 
         personnage = personnage.trim().toLowerCase();
+        
+        // Vérifier si l'utilisateur a entré un numéro
+        try {
+            int numero = Integer.parseInt(personnage);
+            if (numero > 0 && numero <= pnjs.size()) {
+                PNJ pnj = pnjs.get(numero - 1);
+                String[] pngId = pnj.getNomPNJ().split(" ",2);
+                personnage = pngId[0].toLowerCase();
+            }
+        } catch (NumberFormatException e) {
+            // Ce n'est pas un numéro, on continue avec le nom
+        }
+
         for (PNJ pnj : pnjs) {
             String[] pngId = pnj.getNomPNJ().split(" ",2);
             if (pngId[0].toLowerCase().equals(personnage)) {
                 if (!estEtudiant && !personnage.equals("sin") && !personnage.equals("sandrine")) {
-                    return "Vous n'êtes pas encore un étudiant de la MIAGE. Vous devez d'abord rencontrer SIN puis SANDRINE.";
+                    return UIHelper.box("Vous n'êtes pas encore un étudiant de la MIAGE. Vous devez d'abord rencontrer SIN puis SANDRINE.");
                 }
 
                 if (pnj instanceof PNJ_Guide) {
@@ -45,15 +70,15 @@ public class    Joueur  implements Serializable{
                     if (personnage.equals("sin")) {
                         aRencontreSin = true;
                     }
-                    return guide.donnerIndice();
+                    return UIHelper.box(guide.donnerIndice());
                 } else if (pnj instanceof PNJ_Admin) {
                     PNJ_Admin admin = (PNJ_Admin) pnj;
                     if (personnage.equals("sin")) {
                         aRencontreSin = true;
-                        return "SIN : Bienvenue à la MIAGE ! Vous devez maintenant aller voir SANDRINE pour obtenir votre emploi du temps.";
+                        return UIHelper.box("SIN : Bienvenue à la MIAGE ! Vous devez maintenant aller voir SANDRINE pour obtenir votre emploi du temps.");
                     } else if (personnage.equals("sandrine")) {
                         if (!aRencontreSin) {
-                            return "SANDRINE : Désolée, mais vous devez d'abord rencontrer SIN avant de venir me voir.";
+                            return UIHelper.box("SANDRINE : Désolée, mais vous devez d'abord rencontrer SIN avant de venir me voir.");
                         }
                         aRencontreSandrine = true;
                         estEtudiant = true;
@@ -66,9 +91,9 @@ public class    Joueur  implements Serializable{
                         inventaireJoueur.ajouterObjet(emploiDuTemps);
                         zone.changerImage(zone.nomImage().replace("Avec", "Sans"));
 
-                        return "SANDRINE : Voici votre emploi du temps. Consultez-le régulièrement pour savoir quels quizs vous devez faire.";
+                        return UIHelper.box("SANDRINE : Voici votre emploi du temps. Consultez-le régulièrement pour savoir quels quizs vous devez faire.");
                     }
-                    return admin.donnerEmploiDuTemps();
+                    return UIHelper.box(admin.donnerEmploiDuTemps());
                 } else if (pnj instanceof PNJ_ZamZam) {
                     int minutes = 0;
                     int heures = 0;
@@ -78,43 +103,43 @@ public class    Joueur  implements Serializable{
                         minutes = ((time % 86400) % 3600) % 60;
                     }
                     if (heures < 11 || heures >= 12) {
-                        return "Le chef du ZAM ZAM n'est disponible que de 11h à 12h ! (Heure actuelle : " + heures + "h" + String.format("%02d", minutes) + ")";
+                        return UIHelper.box("Le chef du ZAM ZAM n'est disponible que de 11h à 12h ! (Heure actuelle : " + heures + "h" + String.format("%02d", minutes) + ")");
                     }
                     PNJ_ZamZam zamZam = (PNJ_ZamZam) pnj;
                     Objet sandwich = zamZam.donnerSandwich();
                     if (sandwich != null) {
                         inventaireJoueur.ajouterObjet(sandwich);
                         zone.changerImage(zone.nomImage().replace("Avec", "Sans"));
-                        return "Voici un magnifique sandwich pour vous donner des forces !\nVous pourrez l'utiliser quand vous en aurez besoin.\nVous avez reçu : " + sandwich.getLabel();
+                        return UIHelper.box("Voici un magnifique sandwich pour vous donner des forces !\nVous pourrez l'utiliser quand vous en aurez besoin.\nVous avez reçu : " + sandwich.getLabel());
                     } else {
-                        return "Vous avez déjà reçu votre sandwich !";
+                        return UIHelper.box("Vous avez déjà reçu votre sandwich !");
                     }
                 } else if (pnj instanceof PNJ_Prof prof) {
                     EmploiDuTemps emploiDuTemps = getEmploiDuTemps();
                     if (emploiDuTemps == null) {
-                        return "Vous devez d'abord obtenir votre emploi du temps chez SANDRINE.";
+                        return UIHelper.box("Vous devez d'abord obtenir votre emploi du temps chez SANDRINE.");
                     }
                     if (!emploiDuTemps.estValide()) {
-                        return "Votre emploi du temps n'est pas encore valide.";
+                        return UIHelper.box("Votre emploi du temps n'est pas encore valide.");
                     }
                     if (!emploiDuTemps.peutFaireQuiz(prof.getIdQuiz())) {
-                        return "Ce n'est pas le moment de faire ce quiz. Consultez votre emploi du temps.";
+                        return UIHelper.box("Ce n'est pas le moment de faire ce quiz. Consultez votre emploi du temps.");
                     }
                     if(!prof.hasGivenQuiz()){
                         setTalkingTo(prof);
                     }
-                    return prof.donnerQuiz();
+                    return UIHelper.box(prof.donnerQuiz());
                 } else {
                     StringBuilder message = new StringBuilder();
                     for (String dialogue : pnj.getTexteInterraction()) {
                         message.append(dialogue).append("\n");
                     }
-                    return message.toString();
+                    return UIHelper.box(message.toString());
                 }
             }
         }
 
-        return "La personne que vous cherchez n'est pas ici.";
+        return UIHelper.box("La personne que vous cherchez n'est pas ici.");
     }
 
     public EmploiDuTemps getEmploiDuTemps() {
