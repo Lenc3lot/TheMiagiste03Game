@@ -68,20 +68,32 @@ public class EmploiDuTemps extends Objet implements Serializable {
         }
         
         StringBuilder sb = new StringBuilder();
-        sb.append("=== EMPLOI DU TEMPS ===\n");
+        sb.append("╔══════════════════════════════════════════╗\n");
+        sb.append("║           EMPLOI DU TEMPS MIAGE          ║\n");
+        sb.append("╠══════════════════════════════════════════╣\n");
+        
         for (int i = 0; i < quizs.size(); i++) {
             int quizId = quizs.get(i);
             String[] info = QUIZ_INFO.get(quizId);
+            
+            sb.append("║ ");
             if (i == quizActuel) {
-                sb.append("-> ");
+                sb.append("→ ");
+            } else {
+                sb.append("  ");
             }
-            sb.append("Quiz ").append(quizId).append(" - ").append(info[0]);
-            sb.append(" (").append(info[1]).append(")");
+            
+            sb.append(String.format("%-30s", info[0]));
+            sb.append(" ║ ");
+            sb.append(String.format("%-10s", info[1]));
+            
             if (i < quizActuel) {
-                sb.append(" (Terminé)");
+                sb.append(" ✓");
             }
             sb.append("\n");
         }
+        
+        sb.append("╚══════════════════════════════════════════╝\n");
         return sb.toString();
     }
 } 

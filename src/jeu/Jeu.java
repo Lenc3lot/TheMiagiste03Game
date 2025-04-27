@@ -638,29 +638,26 @@ public class Jeu implements Serializable {
     }
 
     private void afficherAide() {
-        gui.afficher("=== AIDE ===");
-        gui.afficher();
-        gui.afficher("Commandes de déplacement :");
-        gui.afficher("- ALLER [direction] : N (Nord), S (Sud), E (Est), O (Ouest), H (Haut), B (Bas)");
-        gui.afficher("- RETOUR : Retourner à la zone précédente");
-        gui.afficher("- TELEPORTER : Se téléporter à une zone");
-        gui.afficher();
-        gui.afficher("Commandes d'interaction :");
-        gui.afficher("- INSPECTER : Examiner la zone actuelle");
-        gui.afficher("- PRENDRE [objet] : Prendre un objet (ou PRENDRE si un seul objet)");
-        gui.afficher("- OUVRIR [conteneur] : Ouvrir un conteneur (ou OUVRIR pour le coffre)");
-        gui.afficher("- PARLER [personnage] : Parler à un personnage");
-        gui.afficher("- UTILISER [objet] : Utiliser un objet de l'inventaire");
-        gui.afficher();
-        gui.afficher("Commandes de gestion :");
-        gui.afficher("- INVENTAIRE : Afficher votre inventaire");
-        gui.afficher("- CONNEXION [PSEUDO] : Se connecter au jeu");
-        gui.afficher("- SAUVEGARDER : Sauvegarder la partie");
-        gui.afficher("- CHARGER : Charger une partie sauvegardée");
-        gui.afficher("- QUITTER : Quitter le jeu");
-        gui.afficher();
-        gui.afficher("=== FIN AIDE ===");
-        gui.afficher();
+        gui.afficher("\n+---------------- GUIDE DU JEU MIAGE ----------------+\n");
+        gui.afficher("Déplacements :\n" +
+            "  > ALLER N/S/E/O/H/B   : Se déplacer\n" +
+            "  > RETOUR              : Zone précédente\n" +
+            "  > TELEPORTER          : Changer de zone\n");
+        gui.afficher("Interactions :\n" +
+            "  > PARLER [nom]        : Dialoguer\n" +
+            "  > INSPECTER           : Observer la zone\n" +
+            "  > OUVRIR              : Ouvrir un conteneur\n");
+        gui.afficher("Objets :\n" +
+            "  > INVENTAIRE          : Voir les objets\n" +
+            "  > PRENDRE [objet]     : Ramasser\n" +
+            "  > UTILISER [objet]    : Utiliser\n");
+        gui.afficher("Gestion :\n" +
+            "  > CONNEXION [pseudo]  : Se connecter\n" +
+            "  > SAUVEGARDER         : Sauver la partie\n" +
+            "  > CHARGER             : Charger une partie\n" +
+            "  > QUITTER             : Quitter le jeu\n");
+        gui.afficher("\nTapez '?' à tout moment pour revoir ce menu");
+        gui.afficher("+---------------------------------------------------+\n");
     }
     
     private void terminer() {

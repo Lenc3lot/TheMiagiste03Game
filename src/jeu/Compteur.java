@@ -14,7 +14,7 @@ public  class Compteur implements Runnable {
     public void run() {
         try {
             while (startingTime <= secondes) {
-                gui.afficherCompteur("Heure acutelle : " + ((startingTime % 86400) % 3600) / 60 +" H " + ((startingTime % 86400) % 3600) % 60 + " ");
+                gui.afficherCompteur("HORLOGE : " + ((startingTime % 86400) % 3600) / 60 +" H " + ((startingTime % 86400) % 3600) % 60 + " ");
                 Thread.sleep(2000); // attendre 2 secondes
                 startingTime++;
             }
