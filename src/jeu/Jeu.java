@@ -910,7 +910,7 @@ public class Jeu implements Serializable {
             "  > UTILISER [objet]    : Utiliser\n");
         gui.afficher("Gestion :\n" +
             "  > CONNEXION [pseudo]  : Se connecter\n" +
-            "  > SAUVEGARDER         : Sauver la partie\n" +
+            "  > SAUVEGARDE         : Sauver la partie\n" +
             "  > CHARGER             : Charger une partie\n" +
             "  > QUITTER             : Quitter le jeu\n");
         gui.afficher("\nTapez '?' à tout moment pour revoir ce menu");
