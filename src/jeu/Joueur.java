@@ -343,6 +343,36 @@ public class    Joueur  implements Serializable{
             }
         }
 
+        // Easter Egg : CHAT GPT
+        if (objetTrouve.getLabel().toUpperCase().contains("CHAT GPT")) {
+            java.util.Random rand = new java.util.Random();
+            int chance = rand.nextInt(100);
+            if (chance < 30) {
+                return "Chat GPT : \"Je suis désolé, je ne peux pas vous aider avec ça. Je suis juste un modèle de langage.\"";
+            } else if (chance < 60) {
+                return "Chat GPT : \"Voici une réponse générique qui ne répond pas vraiment à votre question.\"";
+            } else if (chance < 90) {
+                return "Chat GPT : \"En tant qu'IA, je ne peux pas avoir d'opinion sur ce sujet.\"";
+            } else {
+                return "Chat GPT : \"*Bip* *Bop* Je suis un robot très intelligent ! *Bip* *Bop*\"";
+            }
+        }
+
+        // Easter Egg : MASCOTTE
+        if (objetTrouve.getLabel().toUpperCase().contains("MASCOTTE")) {
+            java.util.Random rand = new java.util.Random();
+            int chance = rand.nextInt(100);
+            if (chance < 25) {
+                return "La mascotte vous fait un clin d'œil et disparaît dans un nuage de confettis !";
+            } else if (chance < 50) {
+                return "La mascotte fait une danse de la victoire !";
+            } else if (chance < 75) {
+                return "La mascotte vous donne un high-five !";
+            } else {
+                return "La mascotte vous fait un câlin réconfortant !";
+            }
+        }
+
         return "Vous ne pouvez pas utiliser cet objet pour le moment.";
     }
 
