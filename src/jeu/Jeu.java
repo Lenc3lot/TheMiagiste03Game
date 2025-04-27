@@ -219,7 +219,8 @@ public class Jeu implements Serializable {
     }
 
     private void utiliserObjet(String objet) {
-        // TODO: Implémenter la logique d'utilisation d'objet
+        String message = actualPlayer.utiliser(objet);
+        gui.afficher(message);
     }
 
     private void creerCarte() {
@@ -385,8 +386,8 @@ public class Jeu implements Serializable {
                 "1 -Professeur de Transformation",
                 new String[]{"Bonjour !", "Prêt pour le cours ?"},
                 GUIDE_INTEGRATION,
-                60,
-                "Transformation numérique");
+                "Transformation numérique",
+                1);
 
         Question question1Transfo = new Question(1,
                 "Dans quel évènement historique Napoléon a perdu car il n'a pas intégré les acteurs ? \n" +
@@ -418,9 +419,9 @@ public class Jeu implements Serializable {
                 "1 -Professeur de Qualité",
                 new String[]{"Bonjour !", "Prêt pour le cours ?"},
                 MAISON,
-                60,
-                "Management de la qualité"
-        );
+                "Gestion de la qualité",
+                2);
+
         Question question1Qualite = new Question(1,
                 "La gestion de la qualité c'est... ? \n" +
                         "A- Bien. \n" +
@@ -449,11 +450,11 @@ public class Jeu implements Serializable {
     }
     private PNJ_Prof getPnjProfAnglais(){
         PNJ_Prof profAnglais = new PNJ_Prof("PROF_ANG",
-                "1 -Professeur d'anglais",
-                new String[]{"Hello !", "Ready for class ?"},
+                "1 -Professeur d'Anglais",
+                new String[]{"Bonjour !", "Prêt pour le cours ?"},
                 ARTICLE_BANGLADESH,
-                60,
-                "Anglais");
+                "Anglais des affaires",
+                3);
 
         Question question1 = new Question(1,
                 "How are you ? \n" +
@@ -487,8 +488,8 @@ public class Jeu implements Serializable {
                 "1 - Professeur d'algorithmique",
                 new String[]{"Bonjour !", "Prêt pour le cours ?"},
                 ON2,
-                60,
-                "Algorithmique");
+                "Algorithmique",
+                4);
 
         Question question1 = new Question(1,
                 "Qu'est ce que la complexité ? \n" +
@@ -519,11 +520,11 @@ public class Jeu implements Serializable {
     private PNJ_Prof getPnjProfGestion(){
 
         PNJ_Prof profGestion = new PNJ_Prof("PROF_GEST",
-                "1 -Professeur de gestion",
+                "1 -Professeur de Gestion",
                 new String[]{"Bonjour !", "Prêt pour le cours ?"},
                 SCRUM_BOOK,
-                60,
-                "Gestion de projet SCRUM");
+                "Gestion de projet SCRUM",
+                5);
 
         Question question1 = new Question(1,
                 "C'est quoi la méthode AGILE ? \n" +
@@ -556,8 +557,8 @@ public class Jeu implements Serializable {
                 "2 -Ordinateur",
                 new String[]{"BIENVENUE DANS LE QUIZZ WOOCLOP, PREPAREZ VOUS POUR LE TEST"},
                 CLE_USB,
-                60,
-                "Gestion de projet");
+                "Utilisation de Wooclap",
+                6);
 
         Question question1 = new Question(1,
                 "C'est quoi un KANBAN ? \n" +

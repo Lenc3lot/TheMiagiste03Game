@@ -7,11 +7,17 @@ public class Joueur  implements Serializable{
     private String pseudo;
     private Inventaire inventaireJoueur;
     private boolean isLogged;
+    private boolean aRencontreSin;
+    private boolean aRencontreSandrine;
+    private boolean estEtudiant;
 
     public Joueur(String unPseudo) {
         this.pseudo = unPseudo;
         this.inventaireJoueur = new Inventaire();
         this.isLogged = false;
+        this.aRencontreSin = false;
+        this.aRencontreSandrine = false;
+        this.estEtudiant = false;
     }
 
     public String parler(String personnage, Zone zone) {
@@ -28,21 +34,39 @@ public class Joueur  implements Serializable{
         for (PNJ pnj : pnjs) {
             String[] pngId = pnj.getNomPNJ().split(" ",2);
             if (pngId[0].toLowerCase().equals(personnage)) {
-                // Gestion des différents types de PNJ
+                if (!estEtudiant && !personnage.equals("sin") && !personnage.equals("sandrine")) {
+                    return "Vous n'êtes pas encore un étudiant de la MIAGE. Vous devez d'abord rencontrer SIN puis SANDRINE.";
+                }
+
                 if (pnj instanceof PNJ_Guide) {
                     PNJ_Guide guide = (PNJ_Guide) pnj;
+                    if (personnage.equals("sin")) {
+                        aRencontreSin = true;
+                    }
                     return guide.donnerIndice();
                 } else if (pnj instanceof PNJ_Admin) {
                     PNJ_Admin admin = (PNJ_Admin) pnj;
-                    String message = admin.donnerEmploiDuTemps();
-                    Objet emploiDuTemps = admin.getEmploiDuTemps();
-                    if (emploiDuTemps != null) {
+                    if (personnage.equals("sin")) {
+                        aRencontreSin = true;
+                        return "SIN : Bienvenue à la MIAGE ! Vous devez maintenant aller voir SANDRINE pour obtenir votre emploi du temps.";
+                    } else if (personnage.equals("sandrine")) {
+                        if (!aRencontreSin) {
+                            return "SANDRINE : Désolée, mais vous devez d'abord rencontrer SIN avant de venir me voir.";
+                        }
+                        aRencontreSandrine = true;
+                        estEtudiant = true;
+                        
+                        // Création de l'emploi du temps
+                        List<Integer> listeQuizs = admin.getListeQuizs();
+                        EmploiDuTemps emploiDuTemps = new EmploiDuTemps(listeQuizs);
+                        emploiDuTemps.validerEmploiDuTemps();
+                        
                         inventaireJoueur.ajouterObjet(emploiDuTemps);
-                        message += "\nVous avez reçu : " + emploiDuTemps.getLabel();
-                        // Changer l'image de la zone après avoir reçu l'objet
                         zone.changerImage(zone.nomImage().replace("Avec", "Sans"));
+                        
+                        return "SANDRINE : Voici votre emploi du temps. Consultez-le régulièrement pour savoir quels quizs vous devez faire.";
                     }
-                    return message;
+                    return admin.donnerEmploiDuTemps();
                 } else if (pnj instanceof PNJ_ZamZam) {
                     PNJ_ZamZam zamZam = (PNJ_ZamZam) pnj;
                     String message = zamZam.donnerSandwich();
@@ -50,15 +74,23 @@ public class Joueur  implements Serializable{
                     if (sandwich != null) {
                         inventaireJoueur.ajouterObjet(sandwich);
                         message += "\nVous avez reçu : " + sandwich.getLabel();
-                        // Changer l'image de la zone après avoir reçu l'objet
                         zone.changerImage(zone.nomImage().replace("Avec", "Sans"));
                     }
                     return message;
                 } else if (pnj instanceof PNJ_Prof) {
                     PNJ_Prof prof = (PNJ_Prof) pnj;
+                    EmploiDuTemps emploiDuTemps = getEmploiDuTemps();
+                    if (emploiDuTemps == null) {
+                        return "Vous devez d'abord obtenir votre emploi du temps chez SANDRINE.";
+                    }
+                    if (!emploiDuTemps.estValide()) {
+                        return "Votre emploi du temps n'est pas encore valide.";
+                    }
+                    if (!emploiDuTemps.peutFaireQuiz(prof.getIdQuiz())) {
+                        return "Ce n'est pas le moment de faire ce quiz. Consultez votre emploi du temps.";
+                    }
                     return prof.donnerQuiz();
                 } else {
-                    // Pour les autres PNJ, afficher leurs dialogues de base
                     StringBuilder message = new StringBuilder();
                     for (String dialogue : pnj.getTexteInterraction()) {
                         message.append(dialogue).append("\n");
@@ -69,6 +101,16 @@ public class Joueur  implements Serializable{
         }
 
         return "La personne que vous cherchez n'est pas ici.";
+    }
+
+    private EmploiDuTemps getEmploiDuTemps() {
+        List<Objet> objets = inventaireJoueur.getObjets();
+        for (Objet obj : objets) {
+            if (obj instanceof EmploiDuTemps) {
+                return (EmploiDuTemps) obj;
+            }
+        }
+        return null;
     }
 
     public String inspecter(String element, Zone zone) {
@@ -140,8 +182,23 @@ public class Joueur  implements Serializable{
     }
 
     public String utiliser(String objet) {
-        //TODO : Retourne une string liée à l'objet
-        return "";
+        if (objet == null || objet.trim().isEmpty()) {
+            return "Quel objet voulez-vous utiliser ?";
+        }
+
+        objet = objet.trim().toUpperCase();
+        List<Objet> objets = inventaireJoueur.getObjets();
+        
+        for (Objet obj : objets) {
+            if (obj.getLabel().toUpperCase().contains(objet) || objet.contains(obj.getLabel().toUpperCase())) {
+                if (obj instanceof EmploiDuTemps) {
+                    return obj.toString();
+                }
+                return "Vous ne pouvez pas utiliser cet objet pour le moment.";
+            }
+        }
+        
+        return "Vous n'avez pas cet objet dans votre inventaire.";
     }
 
     public void setPseudo(String pseudo) {

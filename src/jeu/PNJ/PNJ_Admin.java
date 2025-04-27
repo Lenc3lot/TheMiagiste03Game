@@ -1,16 +1,26 @@
 package jeu.PNJ;
 
 import jeu.Objet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PNJ_Admin extends PNJ {
     private boolean hasGivenSchedule;
     private final Objet emploiDuTemps;
     private Boolean isFinalExamSuccessed;
+    private final List<Integer> listeQuizs;
 
     public PNJ_Admin(String unIdPNJ, String unNomPNJ, String[] tabInterractions) {
         super(unIdPNJ, unNomPNJ, tabInterractions);
         this.hasGivenSchedule = false;
         this.emploiDuTemps = new Objet("EDT", "Emploi du temps MIAGE", true, true);
+        this.listeQuizs = new ArrayList<>();
+        // Ajout des IDs des quizs disponibles (les vrais quizs des profs)
+        listeQuizs.add(1); // Quiz 1
+        listeQuizs.add(2); // Quiz 2
+        listeQuizs.add(3); // Quiz 3
+        listeQuizs.add(4); // Quiz 4
+        listeQuizs.add(5); // Quiz 5
     }
 
     public boolean isAllKeyItemsCollected(){
@@ -31,7 +41,13 @@ public class PNJ_Admin extends PNJ {
     public Objet getEmploiDuTemps() {
         return emploiDuTemps;
     }
-    public void startExamFinal(){//TODO}
+
+    public List<Integer> getListeQuizs() {
+        return new ArrayList<>(listeQuizs); // Retourne une copie pour éviter les modifications externes
+    }
+
+    public void startExamFinal() {
+        // TODO
     }
 }
 

@@ -7,16 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PNJ_Prof extends PNJ{
-    private int visibleTime;
     private List<Question> listeQuestion = new ArrayList<>();
     private boolean hasGivenQuiz;
     private String matiere;
+    private final int idQuiz; // ID unique du quiz
 
-    public PNJ_Prof(String unIdPNJ, String unNomPNJ, String[] tabInterractions, Objet objetADonner,int visibleTime, String matiere) {
-        super(unIdPNJ, unNomPNJ, tabInterractions,objetADonner);
-        this.visibleTime = visibleTime;
+    public PNJ_Prof(String unIdPNJ, String unNomPNJ, String[] tabInterractions, Objet objetADonner, String matiere, int idQuiz) {
+        super(unIdPNJ, unNomPNJ, tabInterractions, objetADonner);
         this.matiere = matiere;
         this.hasGivenQuiz = false;
+        this.idQuiz = idQuiz;
     }
 
     public String donnerQuiz() {
@@ -29,9 +29,9 @@ public class PNJ_Prof extends PNJ{
         return "Vous avez déjà passé le quiz de " + matiere + " !";
     }
 
-//    private Question selectRandomQuestion() {
-//
-//    }
+    public int getIdQuiz() {
+        return idQuiz;
+    }
 
     public boolean isAnswerTrue(String reponse) {
         for (Question question : listeQuestion) {
