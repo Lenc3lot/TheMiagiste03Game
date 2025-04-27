@@ -12,13 +12,12 @@ public class PNJ_ZamZam extends PNJ {
         this.sandwich = new Objet("SANDWICH", "Magnifique sandwich du ZAM ZAM", false, true);
     }
 
-    public String donnerSandwich() {
+    public Objet donnerSandwich() {
         if (!hasGivenSandwich) {
             hasGivenSandwich = true;
-            return "Voici un magnifique sandwich pour vous donner des forces !\n" +
-                   "Vous pourrez l'utiliser quand vous en aurez besoin.";
+            return sandwich;
         }
-        return "Vous avez déjà reçu votre sandwich !";
+        return null;
     }
 
     public Objet getSandwich() {

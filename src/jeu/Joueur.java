@@ -81,14 +81,14 @@ public class    Joueur  implements Serializable{
                         return "Le chef du ZAM ZAM n'est disponible que de 11h à 12h ! (Heure actuelle : " + heures + "h" + String.format("%02d", minutes) + ")";
                     }
                     PNJ_ZamZam zamZam = (PNJ_ZamZam) pnj;
-                    String message = zamZam.donnerSandwich();
-                    Objet sandwich = zamZam.getSandwich();
+                    Objet sandwich = zamZam.donnerSandwich();
                     if (sandwich != null) {
                         inventaireJoueur.ajouterObjet(sandwich);
-                        message += "\nVous avez reçu : " + sandwich.getLabel();
                         zone.changerImage(zone.nomImage().replace("Avec", "Sans"));
+                        return "Voici un magnifique sandwich pour vous donner des forces !\nVous pourrez l'utiliser quand vous en aurez besoin.\nVous avez reçu : " + sandwich.getLabel();
+                    } else {
+                        return "Vous avez déjà reçu votre sandwich !";
                     }
-                    return message;
                 } else if (pnj instanceof PNJ_Prof prof) {
                     EmploiDuTemps emploiDuTemps = getEmploiDuTemps();
                     if (emploiDuTemps == null) {
@@ -207,6 +207,24 @@ public class    Joueur  implements Serializable{
             if (obj.getLabel().toUpperCase().contains(objet) || objet.contains(obj.getLabel().toUpperCase())) {
                 if (obj instanceof EmploiDuTemps) {
                     return obj.toString();
+                }
+                // Gestion spéciale pour le sandwich du ZAM ZAM
+                if (obj.getLabel().toUpperCase().contains("SANDWICH")) {
+                    java.util.Random rand = new java.util.Random();
+                    boolean bon = rand.nextBoolean();
+                    inventaireJoueur.retirerObjet(obj); // On retire le sandwich après usage
+                    if (jeu != null && jeu.getCompteur() != null) {
+                        int time = jeu.getCompteur().getTimeLeft();
+                        if (bon) {
+                            jeu.getCompteur().setTimeBack(Math.max(0, time - 30));
+                            return "Miam ! Ce sandwich est délicieux, tu te sens plein d'énergie ! (Gain de 30 minutes)";
+                        } else {
+                            jeu.getCompteur().setTimeBack(time + 30);
+                            return "Beurk... Le sandwich était avarié ! Tu perds du temps à être malade... (Perte de 30 minutes)";
+                        }
+                    } else {
+                        return "Erreur : Impossible d'appliquer l'effet du sandwich (compteur non disponible).";
+                    }
                 }
                 return "Vous ne pouvez pas utiliser cet objet pour le moment.";
             }
