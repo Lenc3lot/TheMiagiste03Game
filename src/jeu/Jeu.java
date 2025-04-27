@@ -354,7 +354,9 @@ public class Jeu implements Serializable {
                 actualPlayer.getInventaireJoueur().ajouterObjet(talkingTo.giveItem());
                 actualPlayer.setTalkingTo(null);
                 actualPlayer.getEmploiDuTemps().passerAuQuizSuivant();
-                zoneCourante.changerImage(zoneCourante.nomImage().replace("Avec", "Sans"));
+                if (!zoneCourante.getNom().equals("Salle 2.18")) {
+                    zoneCourante.changerImage(zoneCourante.nomImage().replace("Avec", "Sans"));
+                }
                 gui.afficheImage(zoneCourante.nomImage());
             }else{
                 compteur.setTimeBack(compteur.getTimeLeft() + 30);
@@ -462,7 +464,7 @@ public class Jeu implements Serializable {
         Zone couloirEtage2Est = new Zone("couloir 2ème étage Est", "CouloirEst.png");
         Zone couloirEtage2Ouest = new Zone("couloir 2ème étage Ouest", "CouloirOuest.png");
         Zone salle218 = new Zone("Salle 2.18", "Salle218AvecScrumUsb.png", "Salle218SansScrumUsb.png");
-        Zone salle204 = new Zone("Salle 2.04", "salle204AvecArticlesMicroOndes.png", "salle204SansArticlesMicroOndes.png");
+        Zone salle204 = new Zone("Salle 2.04", "salle204AvecArticlesMicroOndes.png", "salle204SansArticles.png");
         Zone salle201 = new Zone("Salle 2.01", "salle201AvecArticle.png", "salle201SansArticle.png");
 
         //Etage 3
