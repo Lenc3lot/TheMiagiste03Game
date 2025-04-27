@@ -138,7 +138,7 @@ public class EmploiDuTemps extends Objet implements Serializable {
             String[] info = QUIZ_INFO.get(quizId);
             
             sb.append("║ ");
-            if (i == quizActuel) {
+            if (i == quizActuel && !estDernierQuiz()) {
                 sb.append("→ ");
             } else {
                 sb.append("  ");
@@ -148,7 +148,7 @@ public class EmploiDuTemps extends Objet implements Serializable {
             sb.append(" ║ ");
             sb.append(String.format("%-10s", info[1]));
             
-            if (i < quizActuel) {
+            if (i < quizActuel || (i == quizActuel && estDernierQuiz())) {
                 sb.append(" VALIDE");
             }
             sb.append("\n");
@@ -157,7 +157,7 @@ public class EmploiDuTemps extends Objet implements Serializable {
         sb.append("╚══════════════════════════════════════════╝\n");
         
         // Ajout du message pour aller voir Sandrine après le dernier quiz
-        if (quizActuel >= quizs.size()) {
+        if (estDernierQuiz()) {
             sb.append("\nFélicitations ! Vous avez terminé tous vos quiz.\n");
             sb.append("Allez voir SANDRINE pour passer l'examen final !\n");
         }
