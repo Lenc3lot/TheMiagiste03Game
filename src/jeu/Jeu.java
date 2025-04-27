@@ -695,7 +695,7 @@ public class Jeu implements Serializable {
 
         Question question2 = new Question(2,
                 "Is it a good situation to be in vocational training? \n" +
-                        "A- \n" +
+                        "A- You know, I don’t think there’s a right or wrong situation. If I had to summarize my life today with you, I would say that it is first of all meetings. People who reached out to me, perhaps at a time when I couldn’t, when I was home alone. And it is quite curious to say that chance, encounters forge a destiny... Because when we have the taste of the thing, when we have the taste of the well-made thing, the beautiful gesture, sometimes we do not find the interlocutor in front of us I would say, the mirror that helps you to move forward. So that’s not my case, as I was saying there, since I on the contrary, I could: and I say thank you to life, I say thank you, I sing life, I dance life... I am only love! And finally, when many people today say to me: \"But how do you have this humanity?\" , well I answer them very simply, I tell them that it is this taste of love so this taste which pushed me today to undertake a mechanical construction, but tomorrow who knows? Maybe just to put myself in the service of the community, to make the gift, the gift of self... \n" +
                         "B- I like trains a lot yes \n" +
                         "C- Yes, i like to practice and improve my professional skills ! \n",
                 "C");
@@ -809,7 +809,7 @@ public class Jeu implements Serializable {
                 6);
 
         Question question1 = new Question(1,
-                "C'est quoi un KANBAN ? \n" +
+                "C'est quoi un GANT ? \n" +
                         "A- Un système de planification pour la fabrication à flux tendus \n" +
                         "B- Une méthode d'intégration \n" +
                         "C- Une onomatopée de BD\n",
@@ -824,7 +824,7 @@ public class Jeu implements Serializable {
 
         Question question3 = new Question(3,
                 "Que veut dire SMART ? \n" +
-                        "A- Spécifique Mesurable Atteignable Réaliste Temporairement défini  \n" +
+                        "A- Spécifique Mesurable Atteignable Réaliste Temporellement défini  \n" +
                         "B- Saucisson Moutarde Allouette Raclette Toboggan \n" +
                         "C- Spécifique Mesurable Atteignable Réaliste Transmissible \n",
                 "A");
