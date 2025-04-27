@@ -82,72 +82,75 @@ public class Jeu implements Serializable {
             String commande = parties[0].toUpperCase();
             String parametre = parties.length > 1 ? parties[1].toUpperCase() : "";
 
-            switch (commande) {
-                case "ALLER":
-                    allerEn(parametre);
-                    break;
-                case "PARLER":
-                    parlerA(parametre);
-                    break;
-                case "PRENDRE":
-                    prendreObjet(parametre);
-                    break;
-                case "INVENTAIRE":
-                    afficherInventaire();
-                    break;
-                case "INSPECTER":
-                    inspecter(parametre);
-                    break;
-                case "OUVRIR":
-                    ouvrirConteneur(parametre);
-                    break;
-                case "UTILISER":
-                    utiliserObjet(parametre);
-                    break;
-                case "RETOUR":
-                    retourner();
-                    break;
-                case "TELEPORTER":
-                    teleporter();
-                    break;
-                case "QUITTER":
-                    terminer();
-                    break;
-                case "?":
-                case "AIDE":
-                    afficherAide();
-                    break;
-                case "CONNEXION":
-                    if (!actualPlayer.isLogged()){
-                        actualPlayer.setPseudo(parametre);
-                        actualGameState.setMember("playerPseudo",parametre);
-                        gui.afficher("Connecté en tant que : "+ parametre);
-                    }else{
-                        gui.afficher("Vous êtes déja connecté !");
-                    };
-                    break;
-                case "SAUVEGARDE":
-                    sauvegarderJeu();
-                    gui.afficher("Sauvegarde réussie !");
-                    break;
-                case "CHARGER":
-                    if(!actualPlayer.isLogged()){
-                        gui.afficher("Vous n'êtes pas connecté !");
-                    }else{
-                        // TODO : charger les éléments de sauvegarde
-                        HashMap<String, Object> loadSave = actualGameState.loadSave();
-                        compteur.setTimeBack(Integer.parseInt(loadSave.get("acutalTimeLeft").toString()));
-                        setZoneCourante((Zone) loadSave.get("zoneCourante"));
-                        afficherLocalisation();
-                        gui.afficheImage(zoneCourante.nomImage());
-                        historiqueZones = (Stack<Zone>) loadSave.get("historiqueZones");
-                        actualPlayer.setInventaireJoueur((Inventaire) loadSave.get("inventaireJoueur"));
-                        gui.afficher("Partie chargée !");
-                    }
-                    break;
-                default:
-                    gui.afficher("Commande inconnue");
-                    break;
+            if(actualPlayer.getTalkingTo() != null){
+                checkReponse(commande);
+            } else {
+                switch (commande) {
+                    case "ALLER":
+                        allerEn(parametre);
+                        break;
+                    case "PARLER":
+                        parlerA(parametre);
+                        break;
+                    case "PRENDRE":
+                        prendreObjet(parametre);
+                        break;
+                    case "INVENTAIRE":
+                        afficherInventaire();
+                        break;
+                    case "INSPECTER":
+                        inspecter(parametre);
+                        break;
+                    case "OUVRIR":
+                        ouvrirConteneur(parametre);
+                        break;
+                    case "UTILISER":
+                        utiliserObjet(parametre);
+                        break;
+                    case "RETOUR":
+                        retourner();
+                        break;
+                    case "TELEPORTER":
+                        teleporter();
+                        break;
+                    case "QUITTER":
+                        terminer();
+                        break;
+                    case "?":
+                    case "AIDE":
+                        afficherAide();
+                        break;
+                    case "CONNEXION":
+                        if (!actualPlayer.isLogged()){
+                            actualPlayer.setPseudo(parametre);
+                            actualGameState.setMember("playerPseudo",parametre);
+                            gui.afficher("Connecté en tant que : "+ parametre);
+                        }else{
+                            gui.afficher("Vous êtes déja connecté !");
+                        };
+                        break;
+                    case "SAUVEGARDE":
+                        sauvegarderJeu();
+                        gui.afficher("Sauvegarde réussie !");
+                        break;
+                    case "CHARGER":
+                        if(!actualPlayer.isLogged()){
+                            gui.afficher("Vous n'êtes pas connecté !");
+                        }else{
+                            HashMap<String, Object> loadSave = actualGameState.loadSave();
+                            compteur.setTimeBack(Integer.parseInt(loadSave.get("acutalTimeLeft").toString()));
+                            setZoneCourante((Zone) loadSave.get("zoneCourante"));
+                            afficherLocalisation();
+                            gui.afficheImage(zoneCourante.nomImage());
+                            historiqueZones = (Stack<Zone>) loadSave.get("historiqueZones");
+                            actualPlayer.setInventaireJoueur((Inventaire) loadSave.get("inventaireJoueur"));
+                            gui.afficher("Partie chargée !");
+                        }
+                        break;
+                    default:
+                        gui.afficher("Commande inconnue");
+                        break;
+                }
             }
         } else {
             gui.afficher("Le temps est écoulé ! Vous pouvez recommencer en relancant une partie !");
@@ -193,6 +196,24 @@ public class Jeu implements Serializable {
         String message = actualPlayer.parler(personnage, zoneCourante);
         gui.afficher(message);
         gui.afficheImage(zoneCourante.nomImage());
+    }
+
+    private void checkReponse(String reponse){
+        PNJ_Prof talkingTo = actualPlayer.getTalkingTo();
+        if(talkingTo.isAnswerTrue(reponse)){
+            gui.afficher("Bravo pour cet examen ! \n" +
+                    "[Tu as obtenu : "+talkingTo.giveItem().getLabel() +"]");
+            gui.afficher();
+            actualPlayer.getInventaireJoueur().ajouterObjet(talkingTo.giveItem());
+            actualPlayer.setTalkingTo(null);
+            actualPlayer.getEmploiDuTemps().passerAuQuizSuivant();
+        }else{
+            compteur.setTimeBack(compteur.getTimeLeft() + 30);
+            gui.afficher("MAUVAISE REPONSE ! Je repose ma question :  \n"+
+                    talkingTo.getQuestionPosee().getTextQuestion()
+            );
+            gui.afficher();
+        }
     }
 
     private void prendreObjet(String nomObjet) {
@@ -276,7 +297,6 @@ public class Jeu implements Serializable {
         PNJ_Prof profAnglais = getPnjProfAnglais();
         PNJ_Prof profAlgo = getPnjProfAlgo();
         PNJ_Prof profGestion = getPnjProfGestion();
-
         PNJ_Prof profWooclip = getPnjProfWooclip();
 
         // Ajout des PNJ aux zones
@@ -434,7 +454,7 @@ public class Jeu implements Serializable {
                         "A- En localisants les goulots d'etranglements et en les gérants \n" +
                         "B- Il faut menacer les travailleurs \n" +
                         "C- La réponse C \n",
-                "C");
+                "A");
 
         Question question3Qualite = new Question(3,
                 "Qu'est ce que Ishikawa ? \n" +
@@ -465,7 +485,7 @@ public class Jeu implements Serializable {
 
         Question question2 = new Question(2,
                 "Is it a good situation to be in vocational training? \n" +
-                        "A- привет \n" +
+                        "A- \n" +
                         "B- I like trains a lot yes \n" +
                         "C- Yes, i like to practice and improve my professional skills ! \n",
                 "C");
@@ -541,9 +561,9 @@ public class Jeu implements Serializable {
                 "C");
 
         Question question3 = new Question(3,
-                "Qu'est ce qu'un SCRUM Master ? \n" +
+                "Qu'est ce que fait SCRUM Master ? \n" +
                         "A- Assurer l'implication de chaque membre et de les aider à franchir les différents obstacles qu'ils pourraient rencontrer \n" +
-                        "B- Les gouverner tous. Les trouver. Un Anneau pour les amener tous et dans les ténèbres les lier. \n" +
+                        "B- Les gouverner tous. Les trouver. Et pour les amener tous et dans les ténèbres les lier. \n" +
                         "C- Spécifique Mesurable Atteignable Réaliste Transmissible \n",
                 "A");
 
@@ -553,7 +573,7 @@ public class Jeu implements Serializable {
         return profGestion;
     }
     private PNJ_Prof getPnjProfWooclip(){
-        PNJ_Prof profWooclip = new PNJ_Prof("PROF_GEST",
+        PNJ_Prof profWooclip = new PNJ_Prof("WOOCLIP",
                 "2 -Ordinateur",
                 new String[]{"BIENVENUE DANS LE QUIZZ WOOCLOP, PREPAREZ VOUS POUR LE TEST"},
                 CLE_USB,
@@ -564,7 +584,7 @@ public class Jeu implements Serializable {
                 "C'est quoi un KANBAN ? \n" +
                         "A- Un système de planification pour la fabrication à flux tendus \n" +
                         "B- Une méthode d'intégration \n" +
-                        "C- Une onomatopée \n",
+                        "C- Une onomatopée de BD\n",
                 "A");
 
         Question question2 = new Question(2,

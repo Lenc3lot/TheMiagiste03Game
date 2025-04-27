@@ -7,6 +7,7 @@ public class Joueur  implements Serializable{
     private String pseudo;
     private Inventaire inventaireJoueur;
     private boolean isLogged;
+    private PNJ_Prof talkingTo;
     private boolean aRencontreSin;
     private boolean aRencontreSandrine;
     private boolean estEtudiant;
@@ -55,15 +56,15 @@ public class Joueur  implements Serializable{
                         }
                         aRencontreSandrine = true;
                         estEtudiant = true;
-                        
+
                         // Création de l'emploi du temps
                         List<Integer> listeQuizs = admin.getListeQuizs();
                         EmploiDuTemps emploiDuTemps = new EmploiDuTemps(listeQuizs);
                         emploiDuTemps.validerEmploiDuTemps();
-                        
+
                         inventaireJoueur.ajouterObjet(emploiDuTemps);
                         zone.changerImage(zone.nomImage().replace("Avec", "Sans"));
-                        
+
                         return "SANDRINE : Voici votre emploi du temps. Consultez-le régulièrement pour savoir quels quizs vous devez faire.";
                     }
                     return admin.donnerEmploiDuTemps();
@@ -77,8 +78,7 @@ public class Joueur  implements Serializable{
                         zone.changerImage(zone.nomImage().replace("Avec", "Sans"));
                     }
                     return message;
-                } else if (pnj instanceof PNJ_Prof) {
-                    PNJ_Prof prof = (PNJ_Prof) pnj;
+                } else if (pnj instanceof PNJ_Prof prof) {
                     EmploiDuTemps emploiDuTemps = getEmploiDuTemps();
                     if (emploiDuTemps == null) {
                         return "Vous devez d'abord obtenir votre emploi du temps chez SANDRINE.";
@@ -88,6 +88,9 @@ public class Joueur  implements Serializable{
                     }
                     if (!emploiDuTemps.peutFaireQuiz(prof.getIdQuiz())) {
                         return "Ce n'est pas le moment de faire ce quiz. Consultez votre emploi du temps.";
+                    }
+                    if(!prof.hasGivenQuiz()){
+                        setTalkingTo(prof);
                     }
                     return prof.donnerQuiz();
                 } else {
@@ -103,7 +106,7 @@ public class Joueur  implements Serializable{
         return "La personne que vous cherchez n'est pas ici.";
     }
 
-    private EmploiDuTemps getEmploiDuTemps() {
+    public EmploiDuTemps getEmploiDuTemps() {
         List<Objet> objets = inventaireJoueur.getObjets();
         for (Objet obj : objets) {
             if (obj instanceof EmploiDuTemps) {
@@ -188,7 +191,7 @@ public class Joueur  implements Serializable{
 
         objet = objet.trim().toUpperCase();
         List<Objet> objets = inventaireJoueur.getObjets();
-        
+
         for (Objet obj : objets) {
             if (obj.getLabel().toUpperCase().contains(objet) || objet.contains(obj.getLabel().toUpperCase())) {
                 if (obj instanceof EmploiDuTemps) {
@@ -197,7 +200,7 @@ public class Joueur  implements Serializable{
                 return "Vous ne pouvez pas utiliser cet objet pour le moment.";
             }
         }
-        
+
         return "Vous n'avez pas cet objet dans votre inventaire.";
     }
 
@@ -214,6 +217,14 @@ public class Joueur  implements Serializable{
 
     public boolean isLogged() {
         return isLogged;
+    }
+
+    public PNJ_Prof getTalkingTo() {
+        return talkingTo;
+    }
+
+    public void setTalkingTo(PNJ_Prof pnjProf){
+        this.talkingTo = pnjProf;
     }
 
     public Inventaire getInventaireJoueur() {
