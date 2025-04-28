@@ -354,8 +354,14 @@ public class Jeu implements Serializable {
                 actualPlayer.getInventaireJoueur().ajouterObjet(talkingTo.giveItem());
                 actualPlayer.setTalkingTo(null);
                 actualPlayer.getEmploiDuTemps().passerAuQuizSuivant();
-                if (!zoneCourante.getNom().equals("Salle 2.18")) {
-                    zoneCourante.changerImage(zoneCourante.nomImage().replace("Avec", "Sans"));
+                
+                // Gestion du changement d'image
+                String nomZone = zoneCourante.getNom();
+                if (!nomZone.equals("Salle 2.18")) {
+                    String nouvelleImage = nomZone.equals("Salle 2.04") 
+                        ? "salle204SansArticles.png" 
+                        : zoneCourante.nomImage().replace("Avec", "Sans");
+                    zoneCourante.changerImage(nouvelleImage);
                 }
                 gui.afficheImage(zoneCourante.nomImage());
             }else{
