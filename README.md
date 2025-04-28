@@ -60,3 +60,15 @@ La documentation Javadoc est disponible dans le dossier `doc/`. Pour la génére
 ```bash
 javadoc -d doc src/jeu/*.java
 ```
+
+## 📊 Diagramme UML
+
+Le diagramme UML du projet est disponible ci-dessous :
+
+![Diagramme UML du projet](uml.png)
+
+Ce diagramme représente la structure des classes principales du jeu et leurs relations. Il inclut :
+- Les classes de base (Objet, Zone, PNJ)
+- Les différentes sous-classes de PNJ (Admin, Prof, Guide, ZamZam)
+- Les relations entre les classes
+- Les attributs et méthodes principales
