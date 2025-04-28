@@ -78,9 +78,7 @@ public class EmploiDuTemps extends Objet implements Serializable {
      * Passe au quiz suivant dans l'emploi du temps.
      */
     public void passerAuQuizSuivant() {
-        if (quizActuel < quizs.size() - 1) {
-            quizActuel++;
-        }
+        quizActuel++;
     }
 
     /**
@@ -109,12 +107,12 @@ public class EmploiDuTemps extends Objet implements Serializable {
     }
 
     /**
-     * Vérifie si le joueur est sur le dernier quiz de l'emploi du temps.
+     * Vérifie si le joueur a terminé tous les quiz de l'emploi du temps.
      *
-     * @return true si c'est le dernier quiz, false sinon.
+     * @return true si tous les quiz sont terminés, false sinon.
      */
     public boolean estDernierQuiz() {
-        return quizActuel == quizs.size() - 1;
+        return quizActuel >= quizs.size() - 1;
     }
 
     /**
@@ -138,7 +136,7 @@ public class EmploiDuTemps extends Objet implements Serializable {
             String[] info = QUIZ_INFO.get(quizId);
             
             sb.append("║ ");
-            if (i == quizActuel && !estDernierQuiz()) {
+            if (i == quizActuel && quizActuel < quizs.size()) {
                 sb.append("→ ");
             } else {
                 sb.append("  ");
@@ -148,7 +146,7 @@ public class EmploiDuTemps extends Objet implements Serializable {
             sb.append(" ║ ");
             sb.append(String.format("%-10s", info[1]));
             
-            if (i < quizActuel || (i == quizActuel && estDernierQuiz())) {
+            if (i < quizActuel || (i == quizActuel && quizActuel >= quizs.size())) {
                 sb.append(" VALIDE");
             }
             sb.append("\n");
@@ -157,7 +155,7 @@ public class EmploiDuTemps extends Objet implements Serializable {
         sb.append("╚══════════════════════════════════════════╝\n");
         
         // Ajout du message pour aller voir Sandrine après le dernier quiz
-        if (estDernierQuiz()) {
+        if (quizActuel >= quizs.size()) {
             sb.append("\nFélicitations ! Vous avez terminé tous vos quiz.\n");
             sb.append("Allez voir SANDRINE pour passer l'examen final !\n");
         }
