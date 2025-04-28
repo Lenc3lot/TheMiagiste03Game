@@ -65,18 +65,14 @@ public class PNJ_Admin extends PNJ {
      * @return true si tous les objets ont été collectés, false sinon.
      */
     public boolean isAllKeyItemsCollected(Inventaire inventaireJoueur, Compteur compteur) {
-        // TODO : Verifie si le nombre d'item clés ont étés collectés avant l'heure max
-        if (compteur.getTimeLeft() < 1080) {
-            List<Objet> objetList = inventaireJoueur.getObjets();
-            int cptKeyObj = 0;
-            for (Objet objet : objetList) {
-                if (objet.isKeyObject()) {
-                    cptKeyObj++;
-                }
+        List<Objet> objetList = inventaireJoueur.getObjets();
+        int cptKeyObj = 0;
+        for (Objet objet : objetList) {
+            if (objet.isKeyObject()) {
+                cptKeyObj++;
             }
-            return cptKeyObj == 6;
         }
-        return false;
+        return cptKeyObj == 6;
     }
 
     /**

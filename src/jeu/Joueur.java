@@ -262,7 +262,7 @@ public class    Joueur  implements Serializable{
 
                 zone.changerImage("bureauBdeCoffreOuvert.png");
 
-                Objet mascotte = new Objet("MASCOTTE", "Mascotte du BDE", true, true,
+                Objet mascotte = new Objet("MASCOTTE", "Mascotte du BDE", false, true,
                         "La mascotte officielle du BDE");;
                 inventaireJoueur.ajouterObjet(mascotte);
 
